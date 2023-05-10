@@ -63,7 +63,7 @@ async def fantom_to_polygon(wallet: str) -> None:
         from_chain_name='FANTOM',
         from_chain_explorer='ftmscan.com'
     )
-    logger.info(f"FANTOM | {address} | Transaction: https://ftmnscan.com/tx/{fantom_to_polygon_txn_hash.hex()}")
+    logger.info(f"FANTOM | {address} | Transaction: https://ftmscan.com/tx/{fantom_to_polygon_txn_hash.hex()}")
 
 
 async def main():
