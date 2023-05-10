@@ -6,7 +6,13 @@ from eth_account import Account
 
 from config import WALLETS, AMOUNT_TO_SWAP, MIN_AMOUNT
 from bridge.bridger import send_usdc_chain_to_chain, is_balance_updated
-from utils.params import avalanche_w3, stargate_avalanche_contract, stargate_avalanche_address, usdc_avalanche_contract
+from utils.params import (
+    avalanche_w3,
+    stargate_avalanche_contract,
+    stargate_avalanche_address,
+    usdc_avalanche_contract,
+    POLYGON_CHAIN_ID
+)
 
 
 async def avalanche_to_polygon(wallet: str) -> None:
@@ -28,16 +34,16 @@ async def avalanche_to_polygon(wallet: str) -> None:
     while not balance:
         await asyncio.sleep(10)
         if logger_cntr % 6 == 0:
-            logger.info(f'CHECKING AVALANCHE {address} BALANCE')
+            logger.info(f'BALANCE | Checking AVALANCHE {address} USDC balance')
         balance = await is_balance_updated(address, usdc_avalanche_contract)
         logger_cntr += 1
 
-    logger.info(f'TRYING TO SEND {AMOUNT_TO_SWAP / 10 ** 6} USDC FROM AVALANCHE TO POLYGON')
+    logger.info(f'BRIDGING | Trying to bridge {AMOUNT_TO_SWAP / 10 ** 6} USDC from AVALANCHE to POLYGON')
     polygon_to_avalanche_txn_hash = await send_usdc_chain_to_chain(
         wallet=wallet,
         from_chain_w3=avalanche_w3,
         transaction_info={
-            "chain_id": 112,
+            "chain_id": POLYGON_CHAIN_ID,
             "source_pool_id": 1,
             "dest_pool_id": 1,
             "refund_address": address,

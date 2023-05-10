@@ -8,6 +8,7 @@ from web3 import AsyncWeb3
 from web3.contract import AsyncContract
 
 from config import AMOUNT_TO_SWAP
+from utils.params import usdc_addresses
 
 
 async def send_usdc_chain_to_chain(
@@ -134,7 +135,10 @@ async def check_balance(address: str, usdc_contract: AsyncContract) -> int:
         usdc_contract:  USDC contract on a specified chain to interact with
     """
     usdc_balance = await usdc_contract.functions.balanceOf(address).call()
-    logger.info(f'BALANCE | Wallet {address} USDC balance is {usdc_balance}')
+    logger.info(
+        f'BALANCE | {usdc_addresses[usdc_contract.address.lower()]} Wallet {address} USDC balance is '
+        f'{round(usdc_balance / 10 ** 6, 2)}'
+    )
     return usdc_balance
 
 
