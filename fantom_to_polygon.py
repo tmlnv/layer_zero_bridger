@@ -39,7 +39,7 @@ async def fantom_to_polygon(wallet: str) -> None:
         logger_cntr += 1
 
     logger.info(f'BRIDGING | Trying to bridge {AMOUNT_TO_SWAP / 10 ** 6} USDC from FANTOM to POLYGON')
-    polygon_to_avalanche_txn_hash = await send_usdc_chain_to_chain(
+    fantom_to_polygon_txn_hash = await send_usdc_chain_to_chain(
         wallet=wallet,
         from_chain_w3=fantom_w3,
         transaction_info={
@@ -63,7 +63,7 @@ async def fantom_to_polygon(wallet: str) -> None:
         from_chain_name='FANTOM',
         from_chain_explorer='ftmscan.com'
     )
-    logger.info(f"FANTOM | {address} | Transaction: https://ftmnscan.com/tx/{polygon_to_avalanche_txn_hash.hex()}")
+    logger.info(f"FANTOM | {address} | Transaction: https://ftmnscan.com/tx/{fantom_to_polygon_txn_hash.hex()}")
 
 
 async def main():
