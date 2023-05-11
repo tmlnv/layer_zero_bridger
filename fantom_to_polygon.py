@@ -25,9 +25,9 @@ async def fantom_to_polygon(wallet: str) -> None:
     account = Account.from_key(wallet)
     address = account.address
 
-    # start_delay = random.randint(1, 200)
-    # logger.info(f'START DELAY | Waiting for {start_delay} seconds.')
-    # await asyncio.sleep(start_delay)
+    start_delay = random.randint(1, 200)
+    logger.info(f'START DELAY | Waiting for {start_delay} seconds.')
+    await asyncio.sleep(start_delay)
 
     balance = None
     logger_cntr = 0
