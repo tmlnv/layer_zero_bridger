@@ -62,7 +62,7 @@ async def avalanche_to_polygon(wallet: str) -> None:
         usdc_from_chain_contract=usdc_avalanche_contract,
         from_chain_name='AVALANCHE',
         from_chain_explorer='snowtrace.io',
-        gas=50000
+        gas=500000
     )
     logger.success(f"AVALANCHE | {address} | Transaction: https://snowtrace.io/tx/{avalanche_to_fantom_txn_hash.hex()}")
 

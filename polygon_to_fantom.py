@@ -62,7 +62,7 @@ async def polygon_to_fantom(wallet: str) -> None:
         usdc_from_chain_contract=usdc_polygon_contract,
         from_chain_name='POLYGON',
         from_chain_explorer='polygonscan.com',
-        gas=50000
+        gas=500000
     )
     logger.success(f"POLYGON | {address} | Transaction: https://polygonscan.com/tx/{polygon_to_fantom_txn_hash.hex()}")
 
