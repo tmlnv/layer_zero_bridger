@@ -20,19 +20,21 @@ async def send_usdc_chain_to_chain(
         stargate_from_chain_address: ChecksumAddress,
         usdc_from_chain_contract: AsyncContract,
         from_chain_name: str,
-        from_chain_explorer: str
+        from_chain_explorer: str,
+        gas: int
 ) -> HexBytes:
     """Send USDC from one blockchain to another. Tokens are sent to the same wallet.
 
     Args:
+        wallet:                         Wallet address
         from_chain_w3:                  Client
-        transaction_info:    Transaction info
+        transaction_info:               Transaction info
         stargate_from_chain_contract:   Sending chain stargate router contract
         stargate_from_chain_address:    Address of Stargate Finance: Router at sending chain
         usdc_from_chain_contract:       Sending chain usdc contract
         from_chain_name:                Sending chain name
         from_chain_explorer:            Sending chain explorer
-        wallet:                         Wallet address
+        gas:                            Amount of gas
     """
     account = from_chain_w3.eth.account.from_key(wallet)
     address = account.address
@@ -88,7 +90,7 @@ async def send_usdc_chain_to_chain(
             {
                 'from': address,
                 'value': fee,
-                'gas': 500000,
+                'gas': gas,
                 'gasPrice': await from_chain_w3.eth.gas_price,
                 'nonce': await from_chain_w3.eth.get_transaction_count(address),
             }
@@ -101,7 +103,7 @@ async def send_usdc_chain_to_chain(
     elif usdc_balance < AMOUNT_TO_SWAP:
 
         try:
-            min_amount = round(usdc_balance * 0.99)
+            min_amount = usdc_balance - (usdc_balance * 5) // 1000
 
             swap_txn = await stargate_from_chain_contract.functions.swap(
                 transaction_info["chain_id"],
@@ -117,7 +119,7 @@ async def send_usdc_chain_to_chain(
                 {
                     'from': address,
                     'value': fee,
-                    'gas': 500000,
+                    'gas': gas,
                     'gasPrice': await from_chain_w3.eth.gas_price,
                     'nonce': await from_chain_w3.eth.get_transaction_count(address),
                 }

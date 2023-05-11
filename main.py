@@ -41,7 +41,7 @@ async def work(wallet: str) -> None:
 
         counter += 1
 
-    logger.info(f'DONE | Wallet: {address}')
+    logger.success(f'DONE | Wallet: {address}')
 
 
 async def main():
@@ -52,7 +52,7 @@ async def main():
     for task in tasks:
         await task
 
-    logger.info(f'*** FINISHED ***')
+    logger.success(f'*** FINISHED ***')
 
 
 if __name__ == '__main__':

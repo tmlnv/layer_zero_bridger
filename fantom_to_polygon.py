@@ -25,9 +25,9 @@ async def fantom_to_polygon(wallet: str) -> None:
     account = Account.from_key(wallet)
     address = account.address
 
-    start_delay = random.randint(1, 200)
-    logger.info(f'START DELAY | Waiting for {start_delay} seconds.')
-    await asyncio.sleep(start_delay)
+    # start_delay = random.randint(1, 200)
+    # logger.info(f'START DELAY | Waiting for {start_delay} seconds.')
+    # await asyncio.sleep(start_delay)
 
     balance = None
     logger_cntr = 0
@@ -61,9 +61,10 @@ async def fantom_to_polygon(wallet: str) -> None:
         stargate_from_chain_address=stargate_fantom_address,
         usdc_from_chain_contract=usdc_fantom_contract,
         from_chain_name='FANTOM',
-        from_chain_explorer='ftmscan.com'
+        from_chain_explorer='ftmscan.com',
+        gas=60000
     )
-    logger.info(f"FANTOM | {address} | Transaction: https://ftmscan.com/tx/{fantom_to_polygon_txn_hash.hex()}")
+    logger.success(f"FANTOM | {address} | Transaction: https://ftmscan.com/tx/{fantom_to_polygon_txn_hash.hex()}")
 
 
 async def main():
@@ -74,7 +75,7 @@ async def main():
     for task in tasks:
         await task
 
-    logger.info(f'*** FINISHED ***')
+    logger.success(f'*** FINISHED ***')
 
 
 if __name__ == '__main__':

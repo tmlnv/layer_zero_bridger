@@ -11,7 +11,7 @@ from utils.params import (
     stargate_avalanche_contract,
     stargate_avalanche_address,
     usdc_avalanche_contract,
-    POLYGON_CHAIN_ID
+    FANTOM_CHAIN_ID
 )
 
 
@@ -38,12 +38,12 @@ async def avalanche_to_polygon(wallet: str) -> None:
         balance = await is_balance_updated(address, usdc_avalanche_contract)
         logger_cntr += 1
 
-    logger.info(f'BRIDGING | Trying to bridge {AMOUNT_TO_SWAP / 10 ** 6} USDC from AVALANCHE to POLYGON')
-    avalanche_to_polygon_txn_hash = await send_usdc_chain_to_chain(
+    logger.info(f'BRIDGING | Trying to bridge {AMOUNT_TO_SWAP / 10 ** 6} USDC from AVALANCHE to FANTOM')
+    avalanche_to_fantom_txn_hash = await send_usdc_chain_to_chain(
         wallet=wallet,
         from_chain_w3=avalanche_w3,
         transaction_info={
-            "chain_id": POLYGON_CHAIN_ID,
+            "chain_id": FANTOM_CHAIN_ID,
             "source_pool_id": 1,
             "dest_pool_id": 1,
             "refund_address": address,
@@ -64,7 +64,7 @@ async def avalanche_to_polygon(wallet: str) -> None:
         from_chain_explorer='snowtrace.io',
         gas=50000
     )
-    logger.success(f"AVALANCHE | {address} | Transaction: https://snowtrace.io/tx/{avalanche_to_polygon_txn_hash.hex()}")
+    logger.success(f"AVALANCHE | {address} | Transaction: https://snowtrace.io/tx/{avalanche_to_fantom_txn_hash.hex()}")
 
 
 async def main():

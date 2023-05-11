@@ -39,7 +39,7 @@ async def polygon_to_fantom(wallet: str) -> None:
         logger_cntr += 1
 
     logger.info(f'BRIDGING | Trying to bridge {AMOUNT_TO_SWAP / 10 ** 6} USDC from POLYGON to FANTOM')
-    polygon_to_avalanche_txn_hash = await send_usdc_chain_to_chain(
+    polygon_to_fantom_txn_hash = await send_usdc_chain_to_chain(
         wallet=wallet,
         from_chain_w3=polygon_w3,
         transaction_info={
@@ -61,9 +61,10 @@ async def polygon_to_fantom(wallet: str) -> None:
         stargate_from_chain_address=stargate_polygon_address,
         usdc_from_chain_contract=usdc_polygon_contract,
         from_chain_name='POLYGON',
-        from_chain_explorer='polygonscan.com'
+        from_chain_explorer='polygonscan.com',
+        gas=50000
     )
-    logger.info(f"POLYGON | {address} | Transaction: https://polygonscan.com/tx/{polygon_to_avalanche_txn_hash.hex()}")
+    logger.success(f"POLYGON | {address} | Transaction: https://polygonscan.com/tx/{polygon_to_fantom_txn_hash.hex()}")
 
 
 async def main():
@@ -74,7 +75,7 @@ async def main():
     for task in tasks:
         await task
 
-    logger.info(f'*** FINISHED ***')
+    logger.success(f'*** FINISHED ***')
 
 
 if __name__ == '__main__':

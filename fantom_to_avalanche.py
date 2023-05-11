@@ -7,16 +7,16 @@ from eth_account import Account
 from config import WALLETS, AMOUNT_TO_SWAP, MIN_AMOUNT
 from bridge.bridger import send_usdc_chain_to_chain, is_balance_updated
 from utils.params import (
-    avalanche_w3,
-    stargate_avalanche_contract,
-    stargate_avalanche_address,
-    usdc_avalanche_contract,
-    POLYGON_CHAIN_ID
+    fantom_w3,
+    stargate_fantom_contract,
+    stargate_fantom_address,
+    usdc_fantom_contract,
+    AVALANCHE_CHAIN_ID
 )
 
 
-async def avalanche_to_polygon(wallet: str) -> None:
-    """Transfer function. It sends USDC from Avalanche to Polygon.
+async def fantom_to_polygon(wallet: str) -> None:
+    """Transfer function. It sends USDC from Fantom to Avalanche.
     Stargate docs:  https://stargateprotocol.gitbook.io/stargate/developers
 
     Args:
@@ -34,16 +34,16 @@ async def avalanche_to_polygon(wallet: str) -> None:
     while not balance:
         await asyncio.sleep(10)
         if logger_cntr % 6 == 0:
-            logger.info(f'BALANCE | Checking AVALANCHE {address} USDC balance')
-        balance = await is_balance_updated(address, usdc_avalanche_contract)
+            logger.info(f'BALANCE | Checking FANTOM {address} USDC balance')
+        balance = await is_balance_updated(address, usdc_fantom_contract)
         logger_cntr += 1
 
-    logger.info(f'BRIDGING | Trying to bridge {AMOUNT_TO_SWAP / 10 ** 6} USDC from AVALANCHE to POLYGON')
-    avalanche_to_polygon_txn_hash = await send_usdc_chain_to_chain(
+    logger.info(f'BRIDGING | Trying to bridge {AMOUNT_TO_SWAP / 10 ** 6} USDC from FANTOM to AVALANCHE')
+    fantom_to_avalanche_txn_hash = await send_usdc_chain_to_chain(
         wallet=wallet,
-        from_chain_w3=avalanche_w3,
+        from_chain_w3=fantom_w3,
         transaction_info={
-            "chain_id": POLYGON_CHAIN_ID,
+            "chain_id": AVALANCHE_CHAIN_ID,
             "source_pool_id": 1,
             "dest_pool_id": 1,
             "refund_address": address,
@@ -57,20 +57,20 @@ async def avalanche_to_polygon(wallet: str) -> None:
             "to": address,
             "data": "0x"
         },
-        stargate_from_chain_contract=stargate_avalanche_contract,
-        stargate_from_chain_address=stargate_avalanche_address,
-        usdc_from_chain_contract=usdc_avalanche_contract,
-        from_chain_name='AVALANCHE',
-        from_chain_explorer='snowtrace.io',
-        gas=50000
+        stargate_from_chain_contract=stargate_fantom_contract,
+        stargate_from_chain_address=stargate_fantom_address,
+        usdc_from_chain_contract=usdc_fantom_contract,
+        from_chain_name='FANTOM',
+        from_chain_explorer='ftmscan.com',
+        gas=60000
     )
-    logger.success(f"AVALANCHE | {address} | Transaction: https://snowtrace.io/tx/{avalanche_to_polygon_txn_hash.hex()}")
+    logger.success(f"FANTOM | {address} | Transaction: https://ftmscan.com/tx/{fantom_to_avalanche_txn_hash.hex()}")
 
 
 async def main():
     tasks = []
     for wallet in WALLETS:
-        tasks.append(asyncio.create_task(avalanche_to_polygon(wallet)))
+        tasks.append(asyncio.create_task(fantom_to_polygon(wallet)))
 
     for task in tasks:
         await task

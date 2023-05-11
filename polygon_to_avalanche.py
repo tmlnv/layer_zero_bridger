@@ -61,9 +61,10 @@ async def polygon_to_avalanche(wallet: str) -> None:
         stargate_from_chain_address=stargate_polygon_address,
         usdc_from_chain_contract=usdc_polygon_contract,
         from_chain_name='POLYGON',
-        from_chain_explorer='polygonscan.com'
+        from_chain_explorer='polygonscan.com',
+        gas=50000
     )
-    logger.info(f"POLYGON | {address} | Transaction: https://polygonscan.com/tx/{polygon_to_avalanche_txn_hash.hex()}")
+    logger.success(f"POLYGON | {address} | Transaction: https://polygonscan.com/tx/{polygon_to_avalanche_txn_hash.hex()}")
 
 
 async def main():
