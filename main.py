@@ -119,14 +119,14 @@ async def send_usdc_chain_to_chain(
 
     elif usdc_balance < AMOUNT_TO_SWAP:
 
-        min_amount = usdc_balance - usdc_balance * 0.005
+        min_amount = round(usdc_balance - usdc_balance * 0.005)
 
         swap_txn = await stargate_from_chain_contract.functions.swap(
             from_chain_transaction_info["chain_id"],
             from_chain_transaction_info["source_pool_id"],
             from_chain_transaction_info["dest_pool_id"],
             from_chain_transaction_info["refund_address"],
-            from_chain_transaction_info["amount_in"],
+            usdc_balance,
             min_amount,
             from_chain_transaction_info["lz_tx_obj"],
             from_chain_transaction_info["to"],
