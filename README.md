@@ -2,6 +2,12 @@
 
 The Layer Zero Bridger is a Python script that automates the process of transferring USDC (a stablecoin cryptocurrency) between different blockchains (main use case Polygon and Fantom). It uses a set of pre-configured wallet addresses to perform transfers in both directions and repeat the process a configurable number of times.
 
+## Supported chains
+
+- Polygon
+- Fantom
+- Avalanche
+
 ## Requirements
 
 - Python 3.10 or higher
