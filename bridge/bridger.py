@@ -51,6 +51,7 @@ async def send_usdc_chain_to_chain(
     fee = fees[0]
 
     allowance = await usdc_from_chain_contract.functions.allowance(address, stargate_from_chain_address).call()
+    logger.debug(f"ALLOWANCE | {from_chain_name} Wallet {address} allowance for USDC is {allowance / 1000}")
 
     if allowance < AMOUNT_TO_SWAP:
         approve_txn = await usdc_from_chain_contract.functions.approve(
