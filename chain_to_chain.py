@@ -240,7 +240,7 @@ async def main():
             )
 
     for task in tasks:
-        logger.info(f'Bringing {mode_mapping[args.mode]}')
+        logger.info(f'Bridging {mode_mapping[args.mode]}')
         await task
 
     logger.success(f'*** FINISHED ***')
