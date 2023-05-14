@@ -1,6 +1,12 @@
 # Layer Zero Bridger
 
-The Layer Zero Bridger is a Python script that automates the process of transferring USDC (a stablecoin cryptocurrency) between different blockchains (main use case Polygon and Fantom). It uses a set of pre-configured wallet addresses to perform transfers in both directions and repeat the process a configurable number of times.
+The Layer Zero Bridger is a Python script that automates the process of transferring USDC (a stablecoin cryptocurrency) between different blockchains (Polygon->Fantom->Avalanche->Polygon). It uses a set of pre-configured wallet addresses to perform transfers in both directions and repeat the process a configurable number of times.
+
+## Supported chains
+
+- Polygon
+- Fantom
+- Avalanche
 
 ## Requirements
 
@@ -43,25 +49,18 @@ python main.py
 
 **Optional:**
 
-Execute only separated one-time bridging runs if you want just to transfer assets:
+Execute only separated one-time bridging runs if you want just to transfer assets. Use `--mode` flag with one of possible options:
+- `pf` to bridge from Polygon to Fantom
+- `pa` to bridge from Polygon to Avalanche
+- `fp` to bridge from Fantom to Polygon
+- `fa` to bridge from Fantom to Avalanche
+- `ap` to bridge from Avalanche to Polygon
+- `af` to bridge from Avalanche to Fantom
+
+Example:
 
 ```bash
-python polygon_to_fantom.py
-```
-```bash
-python fantom_to_avalanche.py
-```
-```bash
-python avalanche_to_fantom.py
-```
-```bash
-python fantom_to_polygon.py
-```
-```bash
-python polygon_to_avalanche.py
-```
-```bash
-python avalanche_to_polygon.py
+python chain_to_chain.py --mode pf
 ```
 
 ## Operation
@@ -70,9 +69,11 @@ The main script performs the following actions for each wallet:
 
 1. After a random delay of 1 to 200 seconds, it initiates a USDC transfer from Polygon to Fantom.
 2. It waits for a random period between 1200 and 1500 seconds.
-3. Then, it initiates a USDC transfer from Fantom back to Polygon.
-4. It waits for a random period between 100 and 300 seconds.
-5. These steps are repeated a predefined number of times (`TIMES` in `config.py`).
+3. Then, it initiates a USDC transfer from Fantom to Avalanche.
+4. It waits for a random period between 1200 and 1500 seconds.
+5. Then, it initiates a USDC transfer from Avalanche back to Polygon.
+6. It waits for a random period between 100 and 300 seconds.
+7. These steps are repeated a predefined number of times (`TIMES` in `config.py`).
 
 The script logs all its actions and reports when each wallet's transfers are done and when all tasks are finished.
 
