@@ -37,10 +37,6 @@ async def work(wallet: str) -> None:
     account = Account.from_key(wallet)
     address = account.address
 
-    start_delay = random.randint(1, 200)
-    logger.info(f'START DELAY | Waiting for {start_delay} seconds.')
-    await asyncio.sleep(start_delay)
-
     while counter < TIMES:
 
         await chain_to_chain(
@@ -91,7 +87,7 @@ async def work(wallet: str) -> None:
         )
 
         avalanche_delay = random.randint(100, 300)
-        logger.info(f'AVALANCE DELAY | Waiting for {avalanche_delay} seconds.')
+        logger.info(f'AVALANCHE DELAY | Waiting for {avalanche_delay} seconds.')
         await asyncio.sleep(fantom_delay)
 
         counter += 1
