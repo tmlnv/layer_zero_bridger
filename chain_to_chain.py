@@ -136,108 +136,109 @@ async def main():
 
     tasks = []
     for wallet in WALLETS:
-        if mode == "polygon-fantom":
-            tasks.append(
-                asyncio.create_task(
-                    chain_to_chain(
-                        wallet=wallet,
-                        from_chain_name='POLYGON',
-                        usdc_from_chain_contract=usdc_polygon_contract,
-                        to_chain_name='FANTOM',
-                        from_chain_w3=polygon_w3,
-                        destination_chain_id=FANTOM_CHAIN_ID,
-                        stargate_from_chain_contract=stargate_polygon_contract,
-                        stargate_from_chain_address=stargate_polygon_address,
-                        from_chain_explorer='polygonscan.com',
-                        gas=500_000
+        match mode:
+            case "polygon-fantom":
+                tasks.append(
+                    asyncio.create_task(
+                        chain_to_chain(
+                            wallet=wallet,
+                            from_chain_name='POLYGON',
+                            usdc_from_chain_contract=usdc_polygon_contract,
+                            to_chain_name='FANTOM',
+                            from_chain_w3=polygon_w3,
+                            destination_chain_id=FANTOM_CHAIN_ID,
+                            stargate_from_chain_contract=stargate_polygon_contract,
+                            stargate_from_chain_address=stargate_polygon_address,
+                            from_chain_explorer='polygonscan.com',
+                            gas=500_000
+                        )
                     )
                 )
-            )
-        elif mode == "polygon-avalanche":
-            tasks.append(
-                asyncio.create_task(
-                    chain_to_chain(
-                        wallet=wallet,
-                        from_chain_name='POLYGON',
-                        usdc_from_chain_contract=usdc_polygon_contract,
-                        to_chain_name='AVALANCHE',
-                        from_chain_w3=polygon_w3,
-                        destination_chain_id=AVALANCHE_CHAIN_ID,
-                        stargate_from_chain_contract=stargate_polygon_contract,
-                        stargate_from_chain_address=stargate_polygon_address,
-                        from_chain_explorer='polygonscan.com',
-                        gas=500_000
+            case "polygon-avalanche":
+                tasks.append(
+                    asyncio.create_task(
+                        chain_to_chain(
+                            wallet=wallet,
+                            from_chain_name='POLYGON',
+                            usdc_from_chain_contract=usdc_polygon_contract,
+                            to_chain_name='AVALANCHE',
+                            from_chain_w3=polygon_w3,
+                            destination_chain_id=AVALANCHE_CHAIN_ID,
+                            stargate_from_chain_contract=stargate_polygon_contract,
+                            stargate_from_chain_address=stargate_polygon_address,
+                            from_chain_explorer='polygonscan.com',
+                            gas=500_000
+                        )
                     )
                 )
-            )
-        elif mode == "fantom-polygon":
-            tasks.append(
-                asyncio.create_task(
-                    chain_to_chain(
-                        wallet=wallet,
-                        from_chain_name='FANTOM',
-                        usdc_from_chain_contract=usdc_fantom_contract,
-                        to_chain_name='POLYGON',
-                        from_chain_w3=fantom_w3,
-                        destination_chain_id=POLYGON_CHAIN_ID,
-                        stargate_from_chain_contract=stargate_fantom_contract,
-                        stargate_from_chain_address=stargate_fantom_address,
-                        from_chain_explorer='ftmscan.com',
-                        gas=600_000
+            case "fantom-polygon":
+                tasks.append(
+                    asyncio.create_task(
+                        chain_to_chain(
+                            wallet=wallet,
+                            from_chain_name='FANTOM',
+                            usdc_from_chain_contract=usdc_fantom_contract,
+                            to_chain_name='POLYGON',
+                            from_chain_w3=fantom_w3,
+                            destination_chain_id=POLYGON_CHAIN_ID,
+                            stargate_from_chain_contract=stargate_fantom_contract,
+                            stargate_from_chain_address=stargate_fantom_address,
+                            from_chain_explorer='ftmscan.com',
+                            gas=600_000
+                        )
                     )
                 )
-            )
-        elif mode == "fantom-avalanche":
-            tasks.append(
-                asyncio.create_task(
-                    chain_to_chain(
-                        wallet=wallet,
-                        from_chain_name='FANTOM',
-                        usdc_from_chain_contract=usdc_fantom_contract,
-                        to_chain_name='AVALANCHE',
-                        from_chain_w3=fantom_w3,
-                        destination_chain_id=AVALANCHE_CHAIN_ID,
-                        stargate_from_chain_contract=stargate_fantom_contract,
-                        stargate_from_chain_address=stargate_fantom_address,
-                        from_chain_explorer='ftmscan.com',
-                        gas=600_000
+            case "fantom-avalanche":
+                tasks.append(
+                    asyncio.create_task(
+                        chain_to_chain(
+                            wallet=wallet,
+                            from_chain_name='FANTOM',
+                            usdc_from_chain_contract=usdc_fantom_contract,
+                            to_chain_name='AVALANCHE',
+                            from_chain_w3=fantom_w3,
+                            destination_chain_id=AVALANCHE_CHAIN_ID,
+                            stargate_from_chain_contract=stargate_fantom_contract,
+                            stargate_from_chain_address=stargate_fantom_address,
+                            from_chain_explorer='ftmscan.com',
+                            gas=600_000
+                        )
                     )
                 )
-            )
-        elif mode == "avalanche-polygon":
-            tasks.append(
-                asyncio.create_task(
-                    chain_to_chain(
-                        wallet=wallet,
-                        from_chain_name='AVALANCHE',
-                        usdc_from_chain_contract=usdc_avalanche_contract,
-                        to_chain_name='POLYGON',
-                        from_chain_w3=avalanche_w3,
-                        destination_chain_id=POLYGON_CHAIN_ID,
-                        stargate_from_chain_contract=stargate_avalanche_contract,
-                        stargate_from_chain_address=stargate_avalanche_address,
-                        from_chain_explorer='snowtrace.io',
-                        gas=500_000
+            case "avalanche-polygon":
+                tasks.append(
+                    asyncio.create_task(
+                        chain_to_chain(
+                            wallet=wallet,
+                            from_chain_name='AVALANCHE',
+                            usdc_from_chain_contract=usdc_avalanche_contract,
+                            to_chain_name='POLYGON',
+                            from_chain_w3=avalanche_w3,
+                            destination_chain_id=POLYGON_CHAIN_ID,
+                            stargate_from_chain_contract=stargate_avalanche_contract,
+                            stargate_from_chain_address=stargate_avalanche_address,
+                            from_chain_explorer='snowtrace.io',
+                            gas=500_000
+                        )
                     )
                 )
-            )
-        elif mode == "avalanche-fantom":
-            tasks.append(
-                asyncio.create_task(
-                    chain_to_chain(
-                        wallet=wallet,
-                        from_chain_name='AVALANCHE',
-                        usdc_from_chain_contract=usdc_avalanche_contract,
-                        to_chain_name='FANTOM',
-                        from_chain_w3=avalanche_w3,
-                        destination_chain_id=FANTOM_CHAIN_ID,
-                        stargate_from_chain_contract=stargate_avalanche_contract,
-                        stargate_from_chain_address=stargate_avalanche_address,
-                        from_chain_explorer='snowtrace.io',
-                        gas=500_000
+            case "avalanche-fantom":
+                tasks.append(
+                    asyncio.create_task(
+                        chain_to_chain(
+                            wallet=wallet,
+                            from_chain_name='AVALANCHE',
+                            usdc_from_chain_contract=usdc_avalanche_contract,
+                            to_chain_name='FANTOM',
+                            from_chain_w3=avalanche_w3,
+                            destination_chain_id=FANTOM_CHAIN_ID,
+                            stargate_from_chain_contract=stargate_avalanche_contract,
+                            stargate_from_chain_address=stargate_avalanche_address,
+                            from_chain_explorer='snowtrace.io',
+                            gas=500_000
+                        )
                     )
                 )
-            )
 
     for task in tasks:
         logger.info(f'Bridging {mode_mapping[args.mode]}')
