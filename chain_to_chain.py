@@ -11,23 +11,7 @@ from web3.contract import AsyncContract
 
 from config import WALLETS, AMOUNT_TO_SWAP, MIN_AMOUNT
 from bridge.bridger import send_usdc_chain_to_chain, is_balance_updated
-from utils.params import (
-    polygon_w3,
-    fantom_w3,
-    avalanche_w3,
-    stargate_polygon_contract,
-    stargate_fantom_contract,
-    stargate_avalanche_contract,
-    stargate_polygon_address,
-    stargate_fantom_address,
-    stargate_avalanche_address,
-    usdc_polygon_contract,
-    usdc_fantom_contract,
-    usdc_avalanche_contract,
-    POLYGON_CHAIN_ID,
-    FANTOM_CHAIN_ID,
-    AVALANCHE_CHAIN_ID,
-)
+from utils.params import polygon, fantom, avalanche
 
 
 async def chain_to_chain(
@@ -67,8 +51,8 @@ async def chain_to_chain(
     balance = None
     logger_cntr = 0
     while not balance:
-        await asyncio.sleep(10)
-        if logger_cntr % 6 == 0:
+        await asyncio.sleep(30)
+        if logger_cntr % 3 == 0:
             logger.info(f'BALANCE | Checking {from_chain_name} {address} USDC balance')
         balance = await is_balance_updated(address, usdc_from_chain_contract)
         logger_cntr += 1
@@ -142,15 +126,15 @@ async def main():
                     asyncio.create_task(
                         chain_to_chain(
                             wallet=wallet,
-                            from_chain_name='POLYGON',
-                            usdc_from_chain_contract=usdc_polygon_contract,
-                            to_chain_name='FANTOM',
-                            from_chain_w3=polygon_w3,
-                            destination_chain_id=FANTOM_CHAIN_ID,
-                            stargate_from_chain_contract=stargate_polygon_contract,
-                            stargate_from_chain_address=stargate_polygon_address,
-                            from_chain_explorer='polygonscan.com',
-                            gas=500_000
+                            from_chain_name=polygon.name,
+                            usdc_from_chain_contract=polygon.usdc_contract,
+                            to_chain_name=fantom.name,
+                            from_chain_w3=polygon.w3,
+                            destination_chain_id=fantom.chain_id,
+                            stargate_from_chain_contract=polygon.stargate_contract,
+                            stargate_from_chain_address=polygon.stargate_address,
+                            from_chain_explorer=polygon.explorer,
+                            gas=polygon.gas
                         )
                     )
                 )
@@ -159,15 +143,15 @@ async def main():
                     asyncio.create_task(
                         chain_to_chain(
                             wallet=wallet,
-                            from_chain_name='POLYGON',
-                            usdc_from_chain_contract=usdc_polygon_contract,
-                            to_chain_name='AVALANCHE',
-                            from_chain_w3=polygon_w3,
-                            destination_chain_id=AVALANCHE_CHAIN_ID,
-                            stargate_from_chain_contract=stargate_polygon_contract,
-                            stargate_from_chain_address=stargate_polygon_address,
-                            from_chain_explorer='polygonscan.com',
-                            gas=500_000
+                            from_chain_name=polygon.name,
+                            usdc_from_chain_contract=polygon.usdc_contract,
+                            to_chain_name=avalanche.name,
+                            from_chain_w3=polygon.w3,
+                            destination_chain_id=avalanche.chain_id,
+                            stargate_from_chain_contract=polygon.stargate_contract,
+                            stargate_from_chain_address=polygon.stargate_address,
+                            from_chain_explorer=polygon.explorer,
+                            gas=polygon.gas
                         )
                     )
                 )
@@ -176,15 +160,15 @@ async def main():
                     asyncio.create_task(
                         chain_to_chain(
                             wallet=wallet,
-                            from_chain_name='FANTOM',
-                            usdc_from_chain_contract=usdc_fantom_contract,
-                            to_chain_name='POLYGON',
-                            from_chain_w3=fantom_w3,
-                            destination_chain_id=POLYGON_CHAIN_ID,
-                            stargate_from_chain_contract=stargate_fantom_contract,
-                            stargate_from_chain_address=stargate_fantom_address,
-                            from_chain_explorer='ftmscan.com',
-                            gas=600_000
+                            from_chain_name=fantom.name,
+                            usdc_from_chain_contract=fantom.usdc_contract,
+                            to_chain_name=polygon.name,
+                            from_chain_w3=fantom.w3,
+                            destination_chain_id=polygon.chain_id,
+                            stargate_from_chain_contract=fantom.stargate_contract,
+                            stargate_from_chain_address=fantom.stargate_address,
+                            from_chain_explorer=fantom.explorer,
+                            gas=fantom.gas
                         )
                     )
                 )
@@ -193,15 +177,15 @@ async def main():
                     asyncio.create_task(
                         chain_to_chain(
                             wallet=wallet,
-                            from_chain_name='FANTOM',
-                            usdc_from_chain_contract=usdc_fantom_contract,
-                            to_chain_name='AVALANCHE',
-                            from_chain_w3=fantom_w3,
-                            destination_chain_id=AVALANCHE_CHAIN_ID,
-                            stargate_from_chain_contract=stargate_fantom_contract,
-                            stargate_from_chain_address=stargate_fantom_address,
-                            from_chain_explorer='ftmscan.com',
-                            gas=600_000
+                            from_chain_name=fantom.name,
+                            usdc_from_chain_contract=fantom.usdc_contract,
+                            to_chain_name=avalanche.name,
+                            from_chain_w3=fantom.w3,
+                            destination_chain_id=avalanche.chain_id,
+                            stargate_from_chain_contract=fantom.stargate_contract,
+                            stargate_from_chain_address=fantom.stargate_address,
+                            from_chain_explorer=fantom.explorer,
+                            gas=fantom.gas
                         )
                     )
                 )
@@ -210,15 +194,15 @@ async def main():
                     asyncio.create_task(
                         chain_to_chain(
                             wallet=wallet,
-                            from_chain_name='AVALANCHE',
-                            usdc_from_chain_contract=usdc_avalanche_contract,
-                            to_chain_name='POLYGON',
-                            from_chain_w3=avalanche_w3,
-                            destination_chain_id=POLYGON_CHAIN_ID,
-                            stargate_from_chain_contract=stargate_avalanche_contract,
-                            stargate_from_chain_address=stargate_avalanche_address,
-                            from_chain_explorer='snowtrace.io',
-                            gas=500_000
+                            from_chain_name=avalanche.name,
+                            usdc_from_chain_contract=avalanche.usdc_contract,
+                            to_chain_name=polygon.name,
+                            from_chain_w3=avalanche.w3,
+                            destination_chain_id=polygon.chain_id,
+                            stargate_from_chain_contract=avalanche.stargate_contract,
+                            stargate_from_chain_address=avalanche.stargate_address,
+                            from_chain_explorer=avalanche.explorer,
+                            gas=avalanche.gas
                         )
                     )
                 )
@@ -227,15 +211,15 @@ async def main():
                     asyncio.create_task(
                         chain_to_chain(
                             wallet=wallet,
-                            from_chain_name='AVALANCHE',
-                            usdc_from_chain_contract=usdc_avalanche_contract,
-                            to_chain_name='FANTOM',
-                            from_chain_w3=avalanche_w3,
-                            destination_chain_id=FANTOM_CHAIN_ID,
-                            stargate_from_chain_contract=stargate_avalanche_contract,
-                            stargate_from_chain_address=stargate_avalanche_address,
-                            from_chain_explorer='snowtrace.io',
-                            gas=500_000
+                            from_chain_name=avalanche.name,
+                            usdc_from_chain_contract=avalanche.usdc_contract,
+                            to_chain_name=fantom.name,
+                            from_chain_w3=avalanche.w3,
+                            destination_chain_id=fantom.chain_id,
+                            stargate_from_chain_contract=avalanche.stargate_contract,
+                            stargate_from_chain_address=avalanche.stargate_address,
+                            from_chain_explorer=avalanche.explorer,
+                            gas=avalanche.gas
                         )
                     )
                 )
