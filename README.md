@@ -49,7 +49,7 @@ python main.py
 
 **Optional:**
 
-Execute only separated one-time bridging runs if you want just to transfer assets. Use `--mode` flag with one of possible options:
+Execute only separated one-time bridging runs if you want just to transfer assets. Execute the `chain_to_chain.py` script using `--mode` flag with one of possible options:
 - `pf` to bridge from Polygon to Fantom
 - `pa` to bridge from Polygon to Avalanche
 - `fp` to bridge from Fantom to Polygon
