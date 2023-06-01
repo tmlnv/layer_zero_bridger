@@ -9,10 +9,10 @@ from eth_account import Account
 from web3 import AsyncWeb3
 from web3.contract import AsyncContract
 
-from config import WALLETS, AMOUNT_TO_SWAP, MIN_AMOUNT
+from config import WALLETS, AMOUNT_TO_SWAP
 from bridge.bridger import send_token_chain_to_chain, is_balance_updated
 from utils.params import polygon, fantom, avalanche, bsc, usdc, usdt
-
+from utils.utils import get_correct_amount_and_min_amount, get_token_decimals
 
 logger.remove()
 logger.add(sys.stderr, format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <lvl>{level}</lvl> | <lvl>{message}</lvl>")
@@ -54,6 +54,9 @@ async def chain_to_chain(
     account = Account.from_key(wallet)
     address = account.address
 
+    amount_to_swap, min_amount = await get_correct_amount_and_min_amount(token_contract=token_from_chain_contract,
+                                                                         amount_to_swap=AMOUNT_TO_SWAP)
+
     start_delay = random.randint(1, 200)
     logger.info(f'START DELAY | Waiting for {start_delay} seconds.')
     await asyncio.sleep(start_delay)
@@ -68,7 +71,8 @@ async def chain_to_chain(
         logger_cntr += 1
 
     logger.info(
-        f'BRIDGING | Trying to bridge {AMOUNT_TO_SWAP / 10 ** 6} {token} from {from_chain_name} to {to_chain_name}')
+        f'BRIDGING | Trying to bridge {amount_to_swap / 10 ** await get_token_decimals(token_from_chain_contract)} '
+        f'{token} from {from_chain_name} to {to_chain_name}')
     bridging_txn_hash = await send_token_chain_to_chain(
         wallet=wallet,
         from_chain_w3=from_chain_w3,
@@ -77,8 +81,8 @@ async def chain_to_chain(
             "source_pool_id": source_pool_id,
             "dest_pool_id": dest_pool_id,
             "refund_address": address,
-            "amount_in": AMOUNT_TO_SWAP,
-            "amount_out_min": MIN_AMOUNT,
+            "amount_in": amount_to_swap,
+            "amount_out_min": min_amount,
             "lz_tx_obj": [
                 0,
                 0,
@@ -92,6 +96,7 @@ async def chain_to_chain(
         token_from_chain_contract=token_from_chain_contract,
         from_chain_name=from_chain_name,
         token=token,
+        amount_to_swap=amount_to_swap,
         from_chain_explorer=from_chain_explorer,
         gas=gas
     )

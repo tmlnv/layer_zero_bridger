@@ -100,7 +100,7 @@ bsc = Chain(
     usdt_address=usdt.bsc_address,
     chain_id=102,
     explorer='bscscan.com',
-    gas=500_000
+    gas=400_000
 )
 
 token_addresses = {

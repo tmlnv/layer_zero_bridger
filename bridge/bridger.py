@@ -8,8 +8,8 @@ from web3 import AsyncWeb3
 from web3.contract import AsyncContract
 from web3.exceptions import ValidationError
 
-from config import AMOUNT_TO_SWAP
 from utils.params import token_addresses
+from utils.utils import get_correct_amount_and_min_amount, get_token_decimals
 
 
 async def send_token_chain_to_chain(
@@ -21,6 +21,7 @@ async def send_token_chain_to_chain(
         token_from_chain_contract: AsyncContract,
         from_chain_name: str,
         token: str,
+        amount_to_swap: int,
         from_chain_explorer: str,
         gas: int
 ) -> HexBytes:
@@ -35,6 +36,7 @@ async def send_token_chain_to_chain(
         token_from_chain_contract:      Sending chain token contract
         from_chain_name:                Sending chain name
         token:                          Token symbol
+        amount_to_swap:                 Human readable amount to swap
         from_chain_explorer:            Sending chain explorer
         gas:                            Amount of gas
     """
@@ -53,12 +55,13 @@ async def send_token_chain_to_chain(
     fee = fees[0]
 
     allowance = await token_from_chain_contract.functions.allowance(address, stargate_from_chain_address).call()
-    logger.debug(f"ALLOWANCE | {from_chain_name} Wallet {address} allowance for {token} is {allowance / 1000}")
+    logger.debug(f"ALLOWANCE | {from_chain_name} Wallet {address} allowance for {token} is "
+                 f"{allowance / 10 ** await get_token_decimals(token_from_chain_contract)}")
 
-    if allowance < AMOUNT_TO_SWAP:
+    if allowance < amount_to_swap:
         approve_txn = await token_from_chain_contract.functions.approve(
             stargate_from_chain_address,
-            AMOUNT_TO_SWAP
+            amount_to_swap
         ).build_transaction(
             {
                 'from': address,
@@ -77,7 +80,7 @@ async def send_token_chain_to_chain(
 
     token_balance = await token_from_chain_contract.functions.balanceOf(address).call()
 
-    if token_balance >= AMOUNT_TO_SWAP:
+    if token_balance >= amount_to_swap:
 
         swap_txn = await stargate_from_chain_contract.functions.swap(
             transaction_info["chain_id"],
@@ -103,10 +106,11 @@ async def send_token_chain_to_chain(
         swap_txn_hash = await from_chain_w3.eth.send_raw_transaction(signed_swap_txn.rawTransaction)
         return swap_txn_hash
 
-    elif token_balance < AMOUNT_TO_SWAP:
+    elif token_balance < amount_to_swap:
 
         try:
-            min_amount = token_balance - (token_balance * 5) // 1000
+            _, min_amount = await get_correct_amount_and_min_amount(token_contract=token_from_chain_contract,
+                                                                    amount_to_swap=token_balance)
 
             swap_txn = await stargate_from_chain_contract.functions.swap(
                 transaction_info["chain_id"],
@@ -148,7 +152,7 @@ async def check_balance(address: str, token: str, token_contract: AsyncContract)
     token_balance = await token_contract.functions.balanceOf(address).call()
     logger.info(
         f'BALANCE | {token_addresses[token_contract.address.lower()]} Wallet {address} {token} balance is '
-        f'{round(token_balance / 10 ** 6, 2)}'
+        f'{round(token_balance / 10 ** await get_token_decimals(token_contract), 2)}'
     )
     return token_balance
 
@@ -164,7 +168,7 @@ async def is_balance_updated(address: str, token: str, token_contract: AsyncCont
     """
     balance = await check_balance(address=address, token=token, token_contract=token_contract)
 
-    while balance < 3 * (10 ** 6):
+    while balance < 3 * (10 ** await get_token_decimals(token_contract)):
         await asyncio.sleep(10)
         balance = await check_balance(address=address, token=token, token_contract=token_contract)
 
