@@ -1,12 +1,15 @@
 # Layer Zero Bridger
 
-The Layer Zero Bridger is a Python script that automates the process of transferring USDC (a stablecoin cryptocurrency) between different blockchains (Polygon->Fantom->Avalanche->Polygon). It uses a set of pre-configured wallet addresses to perform transfers in both directions and repeat the process a configurable number of times.
+The Layer Zero Bridger is a Python script that automates the process of transferring USDC or USDT (stablecoin cryptocurrencies) between different blockchains (Polygon->Avalanche->BSC->Polygon). It uses a set of pre-configured wallet addresses to perform transfers in both directions and repeat the process a configurable number of times.
 
-## Supported chains
+![main.py script logger example for one wallet](https://drive.google.com/uc?export=view&id=1v99Wqi6qa5WA3WJJCuKFcKm8B35HN0rp)
 
-- Polygon
-- Fantom
-- Avalanche
+## Supported chains and tokens
+
+- Polygon (USDC, USDT)
+- Fantom (USDC)
+- Avalanche (USDC, USDT)
+- BSC (USDT)
 
 ## Requirements
 
@@ -49,13 +52,19 @@ python main.py
 
 **Optional:**
 
-Execute only separated one-time bridging runs if you want just to transfer assets. Execute the `chain_to_chain.py` script using `--mode` flag with one of possible options:
+Execute only separated one-time bridging runs if you want just to transfer assets. Consider token availability on both departure and destination chains. Execute the `chain_to_chain.py` script using `--mode` flag with one of possible options:
 - `pf` to bridge from Polygon to Fantom
 - `pa` to bridge from Polygon to Avalanche
+- `pb` to bridge from Polygon to BSC
 - `fp` to bridge from Fantom to Polygon
 - `fa` to bridge from Fantom to Avalanche
+- `fb` to bridge from Fantom to BSC
 - `ap` to bridge from Avalanche to Polygon
 - `af` to bridge from Avalanche to Fantom
+- `ab` to bridge from Avalanche to BSC
+- `bp` to bridge from BSC to Polygon
+- `bf` to bridge from BSC to Fantom
+- `ba` to bridge from BSC to Avalanche
 
 Example:
 
@@ -67,11 +76,11 @@ python chain_to_chain.py --mode pf
 
 The main script performs the following actions for each wallet:
 
-1. After a random delay of 1 to 200 seconds, it initiates a USDC transfer from Polygon to Fantom.
+1. After a random delay of 1 to 200 seconds, it initiates a USDC transfer from Polygon to Avalanche.
 2. It waits for a random period between 1200 and 1500 seconds.
-3. Then, it initiates a USDC transfer from Fantom to Avalanche.
+3. Then, it initiates a USDC transfer from Avalanche to BSC. USDT tokens are received on BSC.
 4. It waits for a random period between 1200 and 1500 seconds.
-5. Then, it initiates a USDC transfer from Avalanche back to Polygon.
+5. Then, it initiates a USDT transfer from BSC back to Polygon. USDC tokens are received on BSC.
 6. It waits for a random period between 100 and 300 seconds.
 7. These steps are repeated a predefined number of times (`TIMES` in `config.py`).
 

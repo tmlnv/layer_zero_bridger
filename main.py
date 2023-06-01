@@ -6,11 +6,12 @@ from eth_account import Account
 
 from config import WALLETS, TIMES
 from chain_to_chain import chain_to_chain
-from utils.params import polygon, fantom, avalanche
+from utils.params import polygon, bsc, avalanche, usdc, usdt
 
 
 async def work(wallet: str) -> None:
-    """Transfer cycle function. It sends USDC from polygon to fantom and then back.
+    """Transfer cycle function. It sends USDC from Polygon to Avalanche and then to BSC as USDT.
+    From BSC USDT tokens are bridged to Polygon into USDC.
     It runs such cycles N times, where N - number of cycles specified if config.py
 
     Args:
@@ -26,10 +27,13 @@ async def work(wallet: str) -> None:
         await chain_to_chain(
             wallet=wallet,
             from_chain_name=polygon.name,
-            usdc_from_chain_contract=polygon.usdc_contract,
-            to_chain_name=fantom.name,
+            token=usdc.name,
+            token_from_chain_contract=polygon.usdc_contract,
+            to_chain_name=avalanche.name,
             from_chain_w3=polygon.w3,
-            destination_chain_id=fantom.chain_id,
+            destination_chain_id=avalanche.chain_id,
+            source_pool_id=usdc.stargate_pool_id,
+            dest_pool_id=usdc.stargate_pool_id,
             stargate_from_chain_contract=polygon.stargate_contract,
             stargate_from_chain_address=polygon.stargate_address,
             from_chain_explorer=polygon.explorer,
@@ -42,37 +46,43 @@ async def work(wallet: str) -> None:
 
         await chain_to_chain(
             wallet=wallet,
-            from_chain_name=fantom.name,
-            usdc_from_chain_contract=fantom.usdc_contract,
-            to_chain_name=avalanche.name,
-            from_chain_w3=fantom.w3,
-            destination_chain_id=avalanche.chain_id,
-            stargate_from_chain_contract=fantom.stargate_contract,
-            stargate_from_chain_address=fantom.stargate_address,
-            from_chain_explorer=fantom.explorer,
-            gas=fantom.gas
-        )
-
-        fantom_delay = random.randint(1200, 1500)
-        logger.info(f'FANTOM DELAY | Waiting for {fantom_delay} seconds.')
-        await asyncio.sleep(fantom_delay)
-
-        await chain_to_chain(
-            wallet=wallet,
             from_chain_name=avalanche.name,
-            usdc_from_chain_contract=avalanche.usdc_contract,
-            to_chain_name=polygon.name,
+            token=usdc.name,
+            token_from_chain_contract=avalanche.usdc_contract,
+            to_chain_name=bsc.name,
             from_chain_w3=avalanche.w3,
-            destination_chain_id=polygon.chain_id,
+            destination_chain_id=bsc.chain_id,
+            source_pool_id=usdc.stargate_pool_id,
+            dest_pool_id=usdt.stargate_pool_id,
             stargate_from_chain_contract=avalanche.stargate_contract,
             stargate_from_chain_address=avalanche.stargate_address,
             from_chain_explorer=avalanche.explorer,
             gas=avalanche.gas
         )
 
-        avalanche_delay = random.randint(100, 300)
+        avalanche_delay = random.randint(1200, 1500)
         logger.info(f'AVALANCHE DELAY | Waiting for {avalanche_delay} seconds.')
-        await asyncio.sleep(fantom_delay)
+        await asyncio.sleep(avalanche_delay)
+
+        await chain_to_chain(
+            wallet=wallet,
+            from_chain_name=bsc.name,
+            token=usdt.name,
+            token_from_chain_contract=bsc.usdt_contract,
+            to_chain_name=polygon.name,
+            from_chain_w3=bsc.w3,
+            destination_chain_id=polygon.chain_id,
+            source_pool_id=usdt.stargate_pool_id,
+            dest_pool_id=usdc.stargate_pool_id,
+            stargate_from_chain_contract=bsc.stargate_contract,
+            stargate_from_chain_address=bsc.stargate_address,
+            from_chain_explorer=bsc.explorer,
+            gas=bsc.gas
+        )
+
+        bsc_delay = random.randint(100, 300)
+        logger.info(f'BSC DELAY | Waiting for {bsc_delay} seconds.')
+        await asyncio.sleep(bsc_delay)
 
         counter += 1
 
