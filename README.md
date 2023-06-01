@@ -80,7 +80,7 @@ The main script performs the following actions for each wallet:
 2. It waits for a random period between 1200 and 1500 seconds.
 3. Then, it initiates a USDC transfer from Avalanche to BSC. USDT tokens are received on BSC.
 4. It waits for a random period between 1200 and 1500 seconds.
-5. Then, it initiates a USDT transfer from BSC back to Polygon. USDC tokens are received on BSC.
+5. Then, it initiates a USDT transfer from BSC back to Polygon. USDC tokens are received on Polygon.
 6. It waits for a random period between 100 and 300 seconds.
 7. These steps are repeated a predefined number of times (`TIMES` in `config.py`).
 
