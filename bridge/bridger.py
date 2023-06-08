@@ -9,7 +9,7 @@ from web3.contract import AsyncContract
 from web3.exceptions import ValidationError
 
 from utils.params import token_addresses
-from utils.utils import get_correct_amount_and_min_amount, get_token_decimals
+from utils.utils import get_min_amount_to_swap, get_token_decimals
 
 
 async def send_token_chain_to_chain(
@@ -109,8 +109,7 @@ async def send_token_chain_to_chain(
     elif token_balance < amount_to_swap:
 
         try:
-            _, min_amount = await get_correct_amount_and_min_amount(token_contract=token_from_chain_contract,
-                                                                    amount_to_swap=token_balance)
+            min_amount = get_min_amount_to_swap(amount_to_swap=token_balance)
 
             swap_txn = await stargate_from_chain_contract.functions.swap(
                 transaction_info["chain_id"],

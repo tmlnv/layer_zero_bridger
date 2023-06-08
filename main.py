@@ -29,11 +29,11 @@ async def work(wallet: str) -> None:
             from_chain_name=polygon.name,
             token=usdc.name,
             token_from_chain_contract=polygon.usdc_contract,
-            to_chain_name=avalanche.name,
+            to_chain_name=bsc.name,
             from_chain_w3=polygon.w3,
-            destination_chain_id=avalanche.chain_id,
+            destination_chain_id=bsc.chain_id,
             source_pool_id=usdc.stargate_pool_id,
-            dest_pool_id=usdc.stargate_pool_id,
+            dest_pool_id=usdt.stargate_pool_id,
             stargate_from_chain_contract=polygon.stargate_contract,
             stargate_from_chain_address=polygon.stargate_address,
             from_chain_explorer=polygon.explorer,
@@ -43,26 +43,6 @@ async def work(wallet: str) -> None:
         polygon_delay = random.randint(1200, 1500)
         logger.info(f'POLYGON DELAY | Waiting for {polygon_delay} seconds.')
         await asyncio.sleep(polygon_delay)
-
-        await chain_to_chain(
-            wallet=wallet,
-            from_chain_name=avalanche.name,
-            token=usdc.name,
-            token_from_chain_contract=avalanche.usdc_contract,
-            to_chain_name=bsc.name,
-            from_chain_w3=avalanche.w3,
-            destination_chain_id=bsc.chain_id,
-            source_pool_id=usdc.stargate_pool_id,
-            dest_pool_id=usdt.stargate_pool_id,
-            stargate_from_chain_contract=avalanche.stargate_contract,
-            stargate_from_chain_address=avalanche.stargate_address,
-            from_chain_explorer=avalanche.explorer,
-            gas=avalanche.gas
-        )
-
-        avalanche_delay = random.randint(1200, 1500)
-        logger.info(f'AVALANCHE DELAY | Waiting for {avalanche_delay} seconds.')
-        await asyncio.sleep(avalanche_delay)
 
         await chain_to_chain(
             wallet=wallet,
