@@ -71,6 +71,15 @@ Example:
 ```bash
 python chain_to_chain.py --mode pf
 ```
+**Optional:**
+
+Generate a new private key and its associated address if you require a fresh wallet. Execute the `wallet_generator/wallet_gen.py` script.
+
+Example:
+
+```bash
+python wallet_generator/wallet_gen.py
+```
 
 ## Operation
 
