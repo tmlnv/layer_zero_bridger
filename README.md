@@ -1,6 +1,6 @@
 # Layer Zero Bridger
 
-The Layer Zero Bridger is a Python script that automates the process of transferring USDC or USDT (stablecoin cryptocurrencies) between different blockchains (Polygon->Avalanche->BSC->Polygon). It uses a set of pre-configured wallet addresses to perform transfers in both directions and repeat the process a configurable number of times.
+The Layer Zero Bridger is a Python script that automates the process of transferring USDC or USDT (stablecoin cryptocurrencies) between different blockchains (Polygon->->BSC->Polygon in main script). It uses a set of pre-configured wallet addresses to perform transfers in both directions and repeat the process a configurable number of times.
 
 ![main.py script logger example for one wallet](https://drive.google.com/uc?export=view&id=1v99Wqi6qa5WA3WJJCuKFcKm8B35HN0rp)
 
@@ -85,13 +85,11 @@ python wallet_generator/wallet_gen.py
 
 The main script performs the following actions for each wallet:
 
-1. After a random delay of 1 to 200 seconds, it initiates a USDC transfer from Polygon to Avalanche.
+1. After a random delay of 1 to 200 seconds, it initiates a USDC transfer from Polygon to BSC. USDT tokens are received on BSC.
 2. It waits for a random period between 1200 and 1500 seconds.
-3. Then, it initiates a USDC transfer from Avalanche to BSC. USDT tokens are received on BSC.
-4. It waits for a random period between 1200 and 1500 seconds.
-5. Then, it initiates a USDT transfer from BSC back to Polygon. USDC tokens are received on Polygon.
-6. It waits for a random period between 100 and 300 seconds.
-7. These steps are repeated a predefined number of times (`TIMES` in `config.py`).
+3. Then, it initiates a USDT transfer from BSC back to Polygon. USDC tokens are received on Polygon.
+4. It waits for a random period between 100 and 300 seconds.
+5. These steps are repeated a predefined number of times (`TIMES` in `config.py`).
 
 The script logs all its actions and reports when each wallet's transfers are done and when all tasks are finished.
 
