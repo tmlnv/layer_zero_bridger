@@ -1,6 +1,6 @@
 # Layer Zero Bridger
 
-The Layer Zero Bridger is a Python script that automates the process of transferring USDC or USDT (stablecoin cryptocurrencies) between different blockchains (Polygon->->BSC->Polygon in main script). It uses a set of pre-configured wallet addresses to perform transfers in both directions and repeat the process a configurable number of times.
+The Layer Zero Bridger is a Python script that automates the process of transferring USDC or USDT (stablecoin cryptocurrencies) between different blockchains (Polygon->BSC->Polygon in main script). It uses a set of pre-configured wallet addresses to perform transfers in both directions and repeat the process a configurable number of times.
 
 ![main.py script logger example for one wallet](https://drive.google.com/uc?export=view&id=1v99Wqi6qa5WA3WJJCuKFcKm8B35HN0rp)
 
