@@ -55,7 +55,7 @@ async def send_token_chain_to_chain(
     fee = fees[0]
 
     allowance = await token_from_chain_contract.functions.allowance(address, stargate_from_chain_address).call()
-    logger.debug(f"ALLOWANCE | {from_chain_name} Wallet {address} allowance for {token} is "
+    logger.debug(f"ALLOWANCE | {address} | {from_chain_name} allowance for {token} is "
                  f"{allowance / 10 ** await get_token_decimals(token_from_chain_contract)}")
 
     if allowance < amount_to_swap:
@@ -73,7 +73,8 @@ async def send_token_chain_to_chain(
         signed_approve_txn = from_chain_w3.eth.account.sign_transaction(approve_txn, wallet)
         approve_txn_hash = await from_chain_w3.eth.send_raw_transaction(signed_approve_txn.rawTransaction)
 
-        logger.info(f"{from_chain_name} | {token} APPROVED https://{from_chain_explorer}/tx/{approve_txn_hash.hex()}")
+        logger.info(f"{from_chain_name} | {address} | {token} APPROVED "
+                    f"https://{from_chain_explorer}/tx/{approve_txn_hash.hex()}")
         nonce += 1
 
         await asyncio.sleep(30)
@@ -94,11 +95,11 @@ async def send_token_chain_to_chain(
             transaction_info["data"]
         ).build_transaction(
             {
-                'from': address,
-                'value': fee,
-                'gas': gas,
-                'gasPrice': await from_chain_w3.eth.gas_price,
-                'nonce': await from_chain_w3.eth.get_transaction_count(address),
+                "from": address,
+                "value": fee,
+                "gas": gas,
+                "gasPrice": await from_chain_w3.eth.gas_price,
+                "nonce": await from_chain_w3.eth.get_transaction_count(address),
             }
         )
 
@@ -123,11 +124,11 @@ async def send_token_chain_to_chain(
                 transaction_info["data"]
             ).build_transaction(
                 {
-                    'from': address,
-                    'value': fee,
-                    'gas': gas,
-                    'gasPrice': await from_chain_w3.eth.gas_price,
-                    'nonce': await from_chain_w3.eth.get_transaction_count(address),
+                    "from": address,
+                    "value": fee,
+                    "gas": gas,
+                    "gasPrice": await from_chain_w3.eth.gas_price,
+                    "nonce": await from_chain_w3.eth.get_transaction_count(address),
                 }
             )
 
@@ -136,7 +137,7 @@ async def send_token_chain_to_chain(
             return swap_txn_hash
 
         except ValidationError as e:
-            logger.error(f'Amount to be bridged is too low. Attempting raised an {e}')
+            logger.error(f"Amount to be bridged is too low. Attempting raised an {e}")
 
 
 async def check_balance(address: str, token: str, token_contract: AsyncContract) -> int:
@@ -150,8 +151,8 @@ async def check_balance(address: str, token: str, token_contract: AsyncContract)
     """
     token_balance = await token_contract.functions.balanceOf(address).call()
     logger.info(
-        f'BALANCE | {token_addresses[token_contract.address.lower()]} Wallet {address} {token} balance is '
-        f'{round(token_balance / 10 ** await get_token_decimals(token_contract), 2)}'
+        f"BALANCE | {address} | {token_addresses[token_contract.address.lower()]} {token} balance is "
+        f"{round(token_balance / 10 ** await get_token_decimals(token_contract), 2)}"
     )
     return token_balance
 

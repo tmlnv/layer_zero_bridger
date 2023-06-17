@@ -37,7 +37,7 @@ async def chain_to_chain(
     Stargate docs:  https://stargateprotocol.gitbook.io/stargate/developers
 
     Args:
-        wallet:                         wallet address
+        wallet:                         Wallet private key
         from_chain_name:                Sending chain name
         token:                          Token to be sent symbol
         token_from_chain_contract:      Sending chain token contract
@@ -58,7 +58,7 @@ async def chain_to_chain(
                                                                          amount_to_swap=AMOUNT_TO_SWAP)
 
     start_delay = random.randint(1, 200)
-    logger.info(f'START DELAY | Waiting for {start_delay} seconds.')
+    logger.info(f"START DELAY | {address} | Waiting for {start_delay} seconds.")
     await asyncio.sleep(start_delay)
 
     balance = None
@@ -66,13 +66,15 @@ async def chain_to_chain(
     while not balance:
         await asyncio.sleep(30)
         if logger_cntr % 3 == 0:
-            logger.info(f'BALANCE | Checking {from_chain_name} {address} {token} balance')
+            logger.info(f"BALANCE | {address} | Checking {from_chain_name} {token} balance")
         balance = await is_balance_updated(address=address, token=token, token_contract=token_from_chain_contract)
         logger_cntr += 1
 
     logger.info(
-        f'BRIDGING | Trying to bridge {amount_to_swap / 10 ** await get_token_decimals(token_from_chain_contract)} '
-        f'{token} from {from_chain_name} to {to_chain_name}')
+        f"BRIDGING | {address} | "
+        f"Trying to bridge {amount_to_swap / 10 ** await get_token_decimals(token_from_chain_contract)} "
+        f"{token} from {from_chain_name} to {to_chain_name}"
+    )
     bridging_txn_hash = await send_token_chain_to_chain(
         wallet=wallet,
         from_chain_w3=from_chain_w3,
@@ -86,7 +88,7 @@ async def chain_to_chain(
             "lz_tx_obj": [
                 0,
                 0,
-                '0x0000000000000000000000000000000000000001'
+                "0x0000000000000000000000000000000000000001"
             ],
             "to": address,
             "data": "0x"
@@ -103,12 +105,12 @@ async def chain_to_chain(
     logger.success(
         f"{from_chain_name} | {address} | Transaction: https://{from_chain_explorer}/tx/{bridging_txn_hash.hex()}"
     )
-    logger.success(f"LAYERZEROSCAN | Transaction: https://layerzeroscan.com/tx/{bridging_txn_hash.hex()}")
+    logger.success(f"LAYERZEROSCAN | {address} | Transaction: https://layerzeroscan.com/tx/{bridging_txn_hash.hex()}")
 
 
 async def main():
     parser = argparse.ArgumentParser(
-        description='Optional use case. Bridge tokens from one chain to another once for specified wallets.'
+        description="Optional use case. Bridge tokens from one chain to another once for specified wallets."
     )
 
     mode_mapping = {
@@ -385,11 +387,11 @@ async def main():
                 )
 
     for task in tasks:
-        logger.info(f'Bridging {mode_mapping[args.mode]}.')
+        logger.info(f"Bridging {mode_mapping[args.mode]}.")
         await task
 
-    logger.success(f'*** FINISHED ***')
+    logger.success("*** FINISHED ***")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     asyncio.run(main())

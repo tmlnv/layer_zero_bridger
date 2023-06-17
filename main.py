@@ -6,11 +6,11 @@ from eth_account import Account
 
 from config import WALLETS, TIMES
 from chain_to_chain import chain_to_chain
-from utils.params import polygon, bsc, avalanche, usdc, usdt
+from utils.params import polygon, bsc, usdc, usdt
 
 
 async def work(wallet: str) -> None:
-    """Transfer cycle function. It sends USDC from Polygon to Avalanche and then to BSC as USDT.
+    """Transfer cycle function. It sends USDC from Polygon to BSC as USDT.
     From BSC USDT tokens are bridged to Polygon into USDC.
     It runs such cycles N times, where N - number of cycles specified if config.py
 
