@@ -33,7 +33,11 @@ The Layer Zero Bridger is a Python script that automates the process of transfer
 
 3. Configure your wallets and number of cycles:
 
-    In the `private_keys.txt` file, specify the wallet keys. Do not leave empty lines.
+    Specify the wallet keys in the `private_keys.example.env` file and run a command below.
+
+   ```bash
+   mv private_keys.example.env private_keys.env
+   ```
    
     In the `config.py` file, specify the wallet keys and the number of transfer cycles you want to run.
 
