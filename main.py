@@ -41,7 +41,7 @@ async def work(wallet: str) -> None:
         )
 
         polygon_delay = random.randint(1200, 1500)
-        logger.info(f'POLYGON DELAY | Waiting for {polygon_delay} seconds.')
+        logger.info(f'POLYGON DELAY | {address} | Waiting for {polygon_delay} seconds.')
         await asyncio.sleep(polygon_delay)
 
         await chain_to_chain(
@@ -61,12 +61,12 @@ async def work(wallet: str) -> None:
         )
 
         bsc_delay = random.randint(100, 300)
-        logger.info(f'BSC DELAY | Waiting for {bsc_delay} seconds.')
+        logger.info(f'BSC DELAY | {address} | Waiting for {bsc_delay} seconds.')
         await asyncio.sleep(bsc_delay)
 
         counter += 1
 
-    logger.success(f'DONE | Wallet: {address}')
+    logger.success(f'DONE | {address}')
 
 
 async def main():
