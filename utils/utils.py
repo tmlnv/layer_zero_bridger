@@ -1,4 +1,5 @@
 """Helper functions"""
+from eth_account import Account
 from web3.contract import AsyncContract
 
 
@@ -34,3 +35,8 @@ async def get_correct_amount_and_min_amount(
     correct_amount_to_swap = int(amount_to_swap * 10 ** decimals)
     min_amount = get_min_amount_to_swap(amount_to_swap=amount_to_swap, slippage=slippage)
     return correct_amount_to_swap, min_amount
+
+
+def wallet_public_address(wallet_private_key: str) -> str:
+    """Function for getting public wallet adress from private key"""
+    return Account.from_key(wallet_private_key).address
