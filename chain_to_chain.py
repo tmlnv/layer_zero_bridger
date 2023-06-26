@@ -5,14 +5,13 @@ import sys
 
 from eth_typing import ChecksumAddress
 from loguru import logger
-from eth_account import Account
 from web3 import AsyncWeb3
 from web3.contract import AsyncContract
 
 from config import WALLETS, AMOUNT_TO_SWAP
 from bridge.bridger import send_token_chain_to_chain, is_balance_updated
 from utils.params import polygon, fantom, avalanche, bsc, usdc, usdt
-from utils.utils import get_correct_amount_and_min_amount, get_token_decimals
+from utils.utils import get_correct_amount_and_min_amount, get_token_decimals, wallet_public_address
 
 logger.remove()
 logger.add(sys.stderr, format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <lvl>{level}</lvl> | <lvl>{message}</lvl>")
@@ -51,8 +50,7 @@ async def chain_to_chain(
         from_chain_explorer:            Sending chain explorer
         gas:                            Amount of gas
     """
-    account = Account.from_key(wallet)
-    address = account.address
+    address = wallet_public_address(wallet)
 
     amount_to_swap, min_amount = await get_correct_amount_and_min_amount(token_contract=token_from_chain_contract,
                                                                          amount_to_swap=AMOUNT_TO_SWAP)
