@@ -3,10 +3,11 @@ import asyncio
 
 from loguru import logger
 
-from config import WALLETS, TIMES
+from config import PRIVATE_KEYS, TIMES
 from chain_to_chain import chain_to_chain
 from utils.params import polygon, avalanche, bsc, usdc, usdt
 from utils.utils import wallet_public_address
+from balance_checker import get_balances
 
 
 async def work(wallet: str) -> None:
@@ -90,7 +91,7 @@ async def work(wallet: str) -> None:
 
 async def main():
     tasks = []
-    for wallet in WALLETS:
+    for wallet in PRIVATE_KEYS:
         tasks.append(asyncio.create_task(work(wallet)))
 
     for task in tasks:
@@ -100,4 +101,5 @@ async def main():
 
 
 if __name__ == '__main__':
+    get_balances()
     asyncio.run(main())

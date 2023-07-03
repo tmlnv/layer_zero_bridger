@@ -8,7 +8,7 @@ from loguru import logger
 from web3 import AsyncWeb3
 from web3.contract import AsyncContract
 
-from config import WALLETS, AMOUNT_TO_SWAP
+from config import PRIVATE_KEYS, AMOUNT_TO_SWAP
 from bridge.bridger import send_token_chain_to_chain, is_balance_updated
 from utils.params import polygon, fantom, avalanche, bsc, usdc, usdt
 from utils.utils import get_correct_amount_and_min_amount, get_token_decimals, wallet_public_address
@@ -141,7 +141,7 @@ async def main():
     mode = mode_mapping[args.mode]
 
     tasks = []
-    for wallet in WALLETS:
+    for wallet in PRIVATE_KEYS:
         match mode:
             case "polygon-fantom":
                 tasks.append(

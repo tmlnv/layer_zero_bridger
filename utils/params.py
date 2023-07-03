@@ -5,11 +5,13 @@ from typing import Optional
 
 from web3 import AsyncWeb3, AsyncHTTPProvider
 
-with open(os.path.join(os.path.abspath(os.path.join(__file__, os.path.pardir)), 'router_abi.json')) as file:
+with open(os.path.join(os.path.abspath(os.path.join(__file__, os.path.pardir)), 'abi/erc20.json')) as file:
+    erc20_abi = json.load(file)
+with open(os.path.join(os.path.abspath(os.path.join(__file__, os.path.pardir)), 'abi/router_abi.json')) as file:
     stargate_abi = json.load(file)
-with open(os.path.join(os.path.abspath(os.path.join(__file__, os.path.pardir)), 'usdc_abi.json')) as file:
+with open(os.path.join(os.path.abspath(os.path.join(__file__, os.path.pardir)), 'abi/usdc_abi.json')) as file:
     usdc_abi = json.load(file)
-with open(os.path.join(os.path.abspath(os.path.join(__file__, os.path.pardir)), 'usdt_abi.json')) as file:
+with open(os.path.join(os.path.abspath(os.path.join(__file__, os.path.pardir)), 'abi/usdt_abi.json')) as file:
     usdt_abi = json.load(file)
 
 

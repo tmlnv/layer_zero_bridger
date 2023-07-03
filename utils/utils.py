@@ -12,6 +12,15 @@ async def get_token_decimals(token_contract: AsyncContract) -> int:
     return await token_contract.functions.decimals().call()
 
 
+async def get_token_symbol(token_contract: AsyncContract) -> str:
+    """ Function for getting token Symbol (BTC for Bitcoin, etc.)
+
+    Args:
+        token_contract: token contract to check
+    """
+    return await token_contract.functions.symbol().call()
+
+
 def get_min_amount_to_swap(amount_to_swap: int, slippage: float = 0.005) -> int:
     """Function for getting minimum receiving amount after the bridge
 
