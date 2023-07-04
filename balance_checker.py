@@ -5,9 +5,9 @@ from prettytable import PrettyTable
 from colorama import Fore, Style
 
 from config import PRIVATE_KEYS
-from utils.utils import get_token_decimals, get_token_symbol, wallet_public_address
-from utils.params import Chain
-from utils.params import polygon, avalanche, bsc
+from modules.utils import get_token_decimals, get_token_symbol, wallet_public_address
+from modules.chains import Chain, polygon, avalanche, bsc
+from modules.custom_logger import logger
 
 
 tokens = {
@@ -19,7 +19,7 @@ tokens = {
 supported_chains = [polygon, avalanche, bsc]
 
 
-RESULT = dict()
+BALANCES = dict()
 
 
 async def _get_token_data(token_contract: AsyncContract):
@@ -77,11 +77,11 @@ async def _main(wallets: list[str], chains: list[Chain]) -> None:
     results = await asyncio.gather(*tasks)
 
     for wallet, chain_name, result in results:
-        if wallet not in RESULT:
-            RESULT[wallet] = {}
-        if chain_name not in RESULT[wallet]:
-            RESULT[wallet][chain_name] = {}
-        RESULT[wallet][chain_name].update(result)
+        if wallet not in BALANCES:
+            BALANCES[wallet] = {}
+        if chain_name not in BALANCES[wallet]:
+            BALANCES[wallet][chain_name] = {}
+        BALANCES[wallet][chain_name].update(result)
 
 
 def print_results():
@@ -93,7 +93,7 @@ def print_results():
 
     columns_to_drop = set(column_names[1:])
 
-    for wallet, chains in RESULT.items():
+    for wallet, chains in BALANCES.items():
         for chain in supported_chains:
             for token in ["USDC", "USDT"]:
                 balance = chains.get(chain.name, {}).get(token, None)
@@ -105,7 +105,7 @@ def print_results():
     table = PrettyTable()
     table.field_names = [column_name for column_name in column_names if column_name not in columns_to_drop]
 
-    for wallet, chains in RESULT.items():
+    for wallet, chains in BALANCES.items():
         row_data = [wallet]
 
         for column_name in table.field_names[1:]:
@@ -116,6 +116,8 @@ def print_results():
         table.add_row(row_data)
 
     colored_table = Fore.GREEN + Style.NORMAL + str(table) + Style.RESET_ALL
+
+    logger.info("WALLET BALANCES")
     print(colored_table)
 
 
@@ -126,10 +128,10 @@ def get_balances():
         wallet = wallet_public_address(private_key)
         public_wallets.append(wallet)
 
-        RESULT.update({wallet: {}})
+        BALANCES.update({wallet: {}})
 
         for chain in supported_chains:
-            RESULT[wallet].update({chain.name: {}})
+            BALANCES[wallet].update({chain.name: {}})
 
     asyncio.run(_main(wallets=public_wallets, chains=supported_chains))
 

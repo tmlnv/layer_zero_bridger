@@ -5,8 +5,9 @@ from loguru import logger
 
 from config import PRIVATE_KEYS, TIMES
 from chain_to_chain import chain_to_chain
-from utils.params import polygon, avalanche, bsc, usdc, usdt
-from utils.utils import wallet_public_address
+from modules.tokens import usdc, usdt
+from modules.chains import polygon, avalanche, bsc
+from modules.utils import wallet_public_address
 from balance_checker import get_balances
 
 

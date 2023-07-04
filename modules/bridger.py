@@ -8,8 +8,8 @@ from web3 import AsyncWeb3
 from web3.contract import AsyncContract
 from web3.exceptions import ValidationError
 
-from utils.params import token_addresses
-from utils.utils import get_min_amount_to_swap, get_token_decimals
+from modules.tokens import token_addresses
+from modules.utils import get_min_amount_to_swap, get_token_decimals
 
 
 async def send_token_chain_to_chain(
