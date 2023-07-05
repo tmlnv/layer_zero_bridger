@@ -4,17 +4,15 @@ import argparse
 import sys
 
 from eth_typing import ChecksumAddress
-from loguru import logger
 from web3 import AsyncWeb3
 from web3.contract import AsyncContract
 
-from config import WALLETS, AMOUNT_TO_SWAP
-from bridge.bridger import send_token_chain_to_chain, is_balance_updated
-from utils.params import polygon, fantom, avalanche, bsc, usdc, usdt
-from utils.utils import get_correct_amount_and_min_amount, get_token_decimals, wallet_public_address
-
-logger.remove()
-logger.add(sys.stderr, format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <lvl>{level}</lvl> | <lvl>{message}</lvl>")
+from config import PRIVATE_KEYS, AMOUNT_TO_SWAP
+from modules.bridger import send_token_chain_to_chain, is_balance_updated
+from modules.tokens import usdc, usdt
+from modules.chains import polygon, avalanche, bsc, fantom
+from modules.utils import get_correct_amount_and_min_amount, get_token_decimals, wallet_public_address
+from modules.custom_logger import logger
 
 
 async def chain_to_chain(
@@ -141,7 +139,7 @@ async def main():
     mode = mode_mapping[args.mode]
 
     tasks = []
-    for wallet in WALLETS:
+    for wallet in PRIVATE_KEYS:
         match mode:
             case "polygon-fantom":
                 tasks.append(

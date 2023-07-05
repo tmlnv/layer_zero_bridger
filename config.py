@@ -9,4 +9,4 @@ TIMES = 1  # Number of runs
 AMOUNT_TO_SWAP = random.randint(AMOUNT_MIN, AMOUNT_MAX)  # Bridge Quantity Randomization
 
 private_keys = dotenv_values("private_keys.env")
-WALLETS = [key for key in private_keys.values()]
+PRIVATE_KEYS = [key for key in private_keys.values()]

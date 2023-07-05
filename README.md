@@ -54,6 +54,8 @@ Execute the `main.py` script:
 python main.py
 ```
 
+### Modules
+
 **Optional:**
 
 Execute only separated one-time bridging runs if you want just to transfer assets. Consider token availability on both departure and destination chains. Execute the `chain_to_chain.py` script using `--mode` flag with one of possible options:
@@ -77,14 +79,23 @@ python chain_to_chain.py --mode pf
 ```
 **Optional:**
 
-Generate a new private key and its associated address if you require a fresh wallet. Execute the `wallet_generator/wallet_gen.py` script.
+Generate a new private key and its associated address if you require a fresh wallet. Execute the `modules/wallet_gen.py` script.
 
 Example:
 
 ```bash
-python wallet_generator/wallet_gen.py
+python wallet_generator/wallet_generator.py
 ```
 
+**Optional:**
+
+Check wallet balances. Execute the `balance_checker.py` script.
+
+Example:
+
+```bash
+python balance_checker.py
+```
 ## Operation
 
 The main script performs the following actions for each wallet:
