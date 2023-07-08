@@ -91,12 +91,7 @@ async def work(wallet: str) -> None:
 
 
 async def main():
-    tasks = []
-    for wallet in PRIVATE_KEYS:
-        tasks.append(asyncio.create_task(work(wallet)))
-
-    for task in tasks:
-        await task
+    await asyncio.gather(*[work(wallet) for wallet in PRIVATE_KEYS], return_exceptions=True)
 
     logger.success(f'*** FINISHED ***')
 
