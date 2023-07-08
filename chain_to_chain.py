@@ -2,6 +2,7 @@ import random
 import asyncio
 import argparse
 import sys
+from typing import Coroutine
 
 from eth_typing import ChecksumAddress
 from web3 import AsyncWeb3
@@ -138,253 +139,229 @@ async def main():
 
     mode = mode_mapping[args.mode]
 
-    tasks = []
+    tasks: list[Coroutine] = []
     for wallet in PRIVATE_KEYS:
         match mode:
             case "polygon-fantom":
                 tasks.append(
-                    asyncio.create_task(
-                        chain_to_chain(
-                            wallet=wallet,
-                            from_chain_name=polygon.name,
-                            token=usdc.name,
-                            token_from_chain_contract=polygon.usdc_contract,
-                            to_chain_name=fantom.name,
-                            from_chain_w3=polygon.w3,
-                            destination_chain_id=fantom.chain_id,
-                            source_pool_id=usdc.stargate_pool_id,
-                            dest_pool_id=usdc.stargate_pool_id,
-                            stargate_from_chain_contract=polygon.stargate_contract,
-                            stargate_from_chain_address=polygon.stargate_address,
-                            from_chain_explorer=polygon.explorer,
-                            gas=polygon.gas
-                        )
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=polygon.name,
+                        token=usdc.name,
+                        token_from_chain_contract=polygon.usdc_contract,
+                        to_chain_name=fantom.name,
+                        from_chain_w3=polygon.w3,
+                        destination_chain_id=fantom.chain_id,
+                        source_pool_id=usdc.stargate_pool_id,
+                        dest_pool_id=usdc.stargate_pool_id,
+                        stargate_from_chain_contract=polygon.stargate_contract,
+                        stargate_from_chain_address=polygon.stargate_address,
+                        from_chain_explorer=polygon.explorer,
+                        gas=polygon.gas
                     )
                 )
             case "polygon-avalanche":
                 tasks.append(
-                    asyncio.create_task(
-                        chain_to_chain(
-                            wallet=wallet,
-                            from_chain_name=polygon.name,
-                            token=usdc.name,
-                            token_from_chain_contract=polygon.usdc_contract,
-                            to_chain_name=avalanche.name,
-                            from_chain_w3=polygon.w3,
-                            destination_chain_id=avalanche.chain_id,
-                            source_pool_id=usdc.stargate_pool_id,
-                            dest_pool_id=usdc.stargate_pool_id,
-                            stargate_from_chain_contract=polygon.stargate_contract,
-                            stargate_from_chain_address=polygon.stargate_address,
-                            from_chain_explorer=polygon.explorer,
-                            gas=polygon.gas
-                        )
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=polygon.name,
+                        token=usdc.name,
+                        token_from_chain_contract=polygon.usdc_contract,
+                        to_chain_name=avalanche.name,
+                        from_chain_w3=polygon.w3,
+                        destination_chain_id=avalanche.chain_id,
+                        source_pool_id=usdc.stargate_pool_id,
+                        dest_pool_id=usdc.stargate_pool_id,
+                        stargate_from_chain_contract=polygon.stargate_contract,
+                        stargate_from_chain_address=polygon.stargate_address,
+                        from_chain_explorer=polygon.explorer,
+                        gas=polygon.gas
                     )
                 )
             case "polygon-bsc":
                 tasks.append(
-                    asyncio.create_task(
-                        chain_to_chain(
-                            wallet=wallet,
-                            from_chain_name=polygon.name,
-                            token=usdc.name,
-                            token_from_chain_contract=polygon.usdc_contract,
-                            to_chain_name=bsc.name,
-                            from_chain_w3=polygon.w3,
-                            destination_chain_id=bsc.chain_id,
-                            source_pool_id=usdc.stargate_pool_id,
-                            dest_pool_id=usdt.stargate_pool_id,
-                            stargate_from_chain_contract=polygon.stargate_contract,
-                            stargate_from_chain_address=polygon.stargate_address,
-                            from_chain_explorer=polygon.explorer,
-                            gas=polygon.gas
-                        )
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=polygon.name,
+                        token=usdc.name,
+                        token_from_chain_contract=polygon.usdc_contract,
+                        to_chain_name=bsc.name,
+                        from_chain_w3=polygon.w3,
+                        destination_chain_id=bsc.chain_id,
+                        source_pool_id=usdc.stargate_pool_id,
+                        dest_pool_id=usdt.stargate_pool_id,
+                        stargate_from_chain_contract=polygon.stargate_contract,
+                        stargate_from_chain_address=polygon.stargate_address,
+                        from_chain_explorer=polygon.explorer,
+                        gas=polygon.gas
                     )
                 )
             case "fantom-polygon":
                 tasks.append(
-                    asyncio.create_task(
-                        chain_to_chain(
-                            wallet=wallet,
-                            from_chain_name=fantom.name,
-                            token=usdc.name,
-                            token_from_chain_contract=fantom.usdc_contract,
-                            to_chain_name=polygon.name,
-                            from_chain_w3=fantom.w3,
-                            destination_chain_id=polygon.chain_id,
-                            source_pool_id=usdc.stargate_pool_id,
-                            dest_pool_id=usdc.stargate_pool_id,
-                            stargate_from_chain_contract=fantom.stargate_contract,
-                            stargate_from_chain_address=fantom.stargate_address,
-                            from_chain_explorer=fantom.explorer,
-                            gas=fantom.gas
-                        )
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=fantom.name,
+                        token=usdc.name,
+                        token_from_chain_contract=fantom.usdc_contract,
+                        to_chain_name=polygon.name,
+                        from_chain_w3=fantom.w3,
+                        destination_chain_id=polygon.chain_id,
+                        source_pool_id=usdc.stargate_pool_id,
+                        dest_pool_id=usdc.stargate_pool_id,
+                        stargate_from_chain_contract=fantom.stargate_contract,
+                        stargate_from_chain_address=fantom.stargate_address,
+                        from_chain_explorer=fantom.explorer,
+                        gas=fantom.gas
                     )
                 )
             case "fantom-avalanche":
                 tasks.append(
-                    asyncio.create_task(
-                        chain_to_chain(
-                            wallet=wallet,
-                            from_chain_name=fantom.name,
-                            token=usdc.name,
-                            token_from_chain_contract=fantom.usdc_contract,
-                            to_chain_name=avalanche.name,
-                            from_chain_w3=fantom.w3,
-                            destination_chain_id=avalanche.chain_id,
-                            source_pool_id=usdc.stargate_pool_id,
-                            dest_pool_id=usdc.stargate_pool_id,
-                            stargate_from_chain_contract=fantom.stargate_contract,
-                            stargate_from_chain_address=fantom.stargate_address,
-                            from_chain_explorer=fantom.explorer,
-                            gas=fantom.gas
-                        )
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=fantom.name,
+                        token=usdc.name,
+                        token_from_chain_contract=fantom.usdc_contract,
+                        to_chain_name=avalanche.name,
+                        from_chain_w3=fantom.w3,
+                        destination_chain_id=avalanche.chain_id,
+                        source_pool_id=usdc.stargate_pool_id,
+                        dest_pool_id=usdc.stargate_pool_id,
+                        stargate_from_chain_contract=fantom.stargate_contract,
+                        stargate_from_chain_address=fantom.stargate_address,
+                        from_chain_explorer=fantom.explorer,
+                        gas=fantom.gas
                     )
                 )
             case "fantom-bsc":
                 tasks.append(
-                    asyncio.create_task(
-                        chain_to_chain(
-                            wallet=wallet,
-                            from_chain_name=fantom.name,
-                            token=usdc.name,
-                            token_from_chain_contract=fantom.usdc_contract,
-                            to_chain_name=bsc.name,
-                            from_chain_w3=fantom.w3,
-                            destination_chain_id=bsc.chain_id,
-                            source_pool_id=usdc.stargate_pool_id,
-                            dest_pool_id=usdt.stargate_pool_id,
-                            stargate_from_chain_contract=fantom.stargate_contract,
-                            stargate_from_chain_address=fantom.stargate_address,
-                            from_chain_explorer=fantom.explorer,
-                            gas=fantom.gas
-                        )
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=fantom.name,
+                        token=usdc.name,
+                        token_from_chain_contract=fantom.usdc_contract,
+                        to_chain_name=bsc.name,
+                        from_chain_w3=fantom.w3,
+                        destination_chain_id=bsc.chain_id,
+                        source_pool_id=usdc.stargate_pool_id,
+                        dest_pool_id=usdt.stargate_pool_id,
+                        stargate_from_chain_contract=fantom.stargate_contract,
+                        stargate_from_chain_address=fantom.stargate_address,
+                        from_chain_explorer=fantom.explorer,
+                        gas=fantom.gas
                     )
                 )
             case "avalanche-polygon":
                 tasks.append(
-                    asyncio.create_task(
-                        chain_to_chain(
-                            wallet=wallet,
-                            from_chain_name=avalanche.name,
-                            token=usdc.name,
-                            token_from_chain_contract=avalanche.usdc_contract,
-                            to_chain_name=polygon.name,
-                            from_chain_w3=avalanche.w3,
-                            destination_chain_id=polygon.chain_id,
-                            source_pool_id=usdc.stargate_pool_id,
-                            dest_pool_id=usdc.stargate_pool_id,
-                            stargate_from_chain_contract=avalanche.stargate_contract,
-                            stargate_from_chain_address=avalanche.stargate_address,
-                            from_chain_explorer=avalanche.explorer,
-                            gas=avalanche.gas
-                        )
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=avalanche.name,
+                        token=usdc.name,
+                        token_from_chain_contract=avalanche.usdc_contract,
+                        to_chain_name=polygon.name,
+                        from_chain_w3=avalanche.w3,
+                        destination_chain_id=polygon.chain_id,
+                        source_pool_id=usdc.stargate_pool_id,
+                        dest_pool_id=usdc.stargate_pool_id,
+                        stargate_from_chain_contract=avalanche.stargate_contract,
+                        stargate_from_chain_address=avalanche.stargate_address,
+                        from_chain_explorer=avalanche.explorer,
+                        gas=avalanche.gas
                     )
                 )
             case "avalanche-fantom":
                 tasks.append(
-                    asyncio.create_task(
-                        chain_to_chain(
-                            wallet=wallet,
-                            from_chain_name=avalanche.name,
-                            token=usdc.name,
-                            token_from_chain_contract=avalanche.usdc_contract,
-                            to_chain_name=fantom.name,
-                            from_chain_w3=avalanche.w3,
-                            destination_chain_id=fantom.chain_id,
-                            source_pool_id=usdc.stargate_pool_id,
-                            dest_pool_id=usdc.stargate_pool_id,
-                            stargate_from_chain_contract=avalanche.stargate_contract,
-                            stargate_from_chain_address=avalanche.stargate_address,
-                            from_chain_explorer=avalanche.explorer,
-                            gas=avalanche.gas
-                        )
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=avalanche.name,
+                        token=usdc.name,
+                        token_from_chain_contract=avalanche.usdc_contract,
+                        to_chain_name=fantom.name,
+                        from_chain_w3=avalanche.w3,
+                        destination_chain_id=fantom.chain_id,
+                        source_pool_id=usdc.stargate_pool_id,
+                        dest_pool_id=usdc.stargate_pool_id,
+                        stargate_from_chain_contract=avalanche.stargate_contract,
+                        stargate_from_chain_address=avalanche.stargate_address,
+                        from_chain_explorer=avalanche.explorer,
+                        gas=avalanche.gas
                     )
                 )
             case "avalanche-bsc":
                 tasks.append(
-                    asyncio.create_task(
-                        chain_to_chain(
-                            wallet=wallet,
-                            from_chain_name=avalanche.name,
-                            token=usdc.name,
-                            token_from_chain_contract=avalanche.usdc_contract,
-                            to_chain_name=bsc.name,
-                            from_chain_w3=avalanche.w3,
-                            destination_chain_id=bsc.chain_id,
-                            source_pool_id=usdc.stargate_pool_id,
-                            dest_pool_id=usdt.stargate_pool_id,
-                            stargate_from_chain_contract=avalanche.stargate_contract,
-                            stargate_from_chain_address=avalanche.stargate_address,
-                            from_chain_explorer=avalanche.explorer,
-                            gas=avalanche.gas
-                        )
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=avalanche.name,
+                        token=usdc.name,
+                        token_from_chain_contract=avalanche.usdc_contract,
+                        to_chain_name=bsc.name,
+                        from_chain_w3=avalanche.w3,
+                        destination_chain_id=bsc.chain_id,
+                        source_pool_id=usdc.stargate_pool_id,
+                        dest_pool_id=usdt.stargate_pool_id,
+                        stargate_from_chain_contract=avalanche.stargate_contract,
+                        stargate_from_chain_address=avalanche.stargate_address,
+                        from_chain_explorer=avalanche.explorer,
+                        gas=avalanche.gas
                     )
                 )
             case "bsc-polygon":
                 tasks.append(
-                    asyncio.create_task(
-                        chain_to_chain(
-                            wallet=wallet,
-                            from_chain_name=bsc.name,
-                            token=usdt.name,
-                            token_from_chain_contract=bsc.usdt_contract,
-                            to_chain_name=polygon.name,
-                            from_chain_w3=bsc.w3,
-                            destination_chain_id=polygon.chain_id,
-                            source_pool_id=usdt.stargate_pool_id,
-                            dest_pool_id=usdc.stargate_pool_id,
-                            stargate_from_chain_contract=bsc.stargate_contract,
-                            stargate_from_chain_address=bsc.stargate_address,
-                            from_chain_explorer=bsc.explorer,
-                            gas=bsc.gas
-                        )
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=bsc.name,
+                        token=usdt.name,
+                        token_from_chain_contract=bsc.usdt_contract,
+                        to_chain_name=polygon.name,
+                        from_chain_w3=bsc.w3,
+                        destination_chain_id=polygon.chain_id,
+                        source_pool_id=usdt.stargate_pool_id,
+                        dest_pool_id=usdc.stargate_pool_id,
+                        stargate_from_chain_contract=bsc.stargate_contract,
+                        stargate_from_chain_address=bsc.stargate_address,
+                        from_chain_explorer=bsc.explorer,
+                        gas=bsc.gas
                     )
                 )
             case "bsc-fantom":
                 tasks.append(
-                    asyncio.create_task(
-                        chain_to_chain(
-                            wallet=wallet,
-                            from_chain_name=bsc.name,
-                            token=usdt.name,
-                            token_from_chain_contract=bsc.usdt_contract,
-                            to_chain_name=fantom.name,
-                            from_chain_w3=bsc.w3,
-                            destination_chain_id=fantom.chain_id,
-                            source_pool_id=usdt.stargate_pool_id,
-                            dest_pool_id=usdc.stargate_pool_id,
-                            stargate_from_chain_contract=bsc.stargate_contract,
-                            stargate_from_chain_address=bsc.stargate_address,
-                            from_chain_explorer=bsc.explorer,
-                            gas=bsc.gas
-                        )
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=bsc.name,
+                        token=usdt.name,
+                        token_from_chain_contract=bsc.usdt_contract,
+                        to_chain_name=fantom.name,
+                        from_chain_w3=bsc.w3,
+                        destination_chain_id=fantom.chain_id,
+                        source_pool_id=usdt.stargate_pool_id,
+                        dest_pool_id=usdc.stargate_pool_id,
+                        stargate_from_chain_contract=bsc.stargate_contract,
+                        stargate_from_chain_address=bsc.stargate_address,
+                        from_chain_explorer=bsc.explorer,
+                        gas=bsc.gas
                     )
+
                 )
             case "bsc-avalanche":
                 tasks.append(
-                    asyncio.create_task(
-                        chain_to_chain(
-                            wallet=wallet,
-                            from_chain_name=bsc.name,
-                            token=usdt.name,
-                            token_from_chain_contract=bsc.usdt_contract,
-                            to_chain_name=avalanche.name,
-                            from_chain_w3=bsc.w3,
-                            destination_chain_id=avalanche.chain_id,
-                            source_pool_id=usdt.stargate_pool_id,
-                            dest_pool_id=usdc.stargate_pool_id,
-                            stargate_from_chain_contract=bsc.stargate_contract,
-                            stargate_from_chain_address=bsc.stargate_address,
-                            from_chain_explorer=bsc.explorer,
-                            gas=bsc.gas
-                        )
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=bsc.name,
+                        token=usdt.name,
+                        token_from_chain_contract=bsc.usdt_contract,
+                        to_chain_name=avalanche.name,
+                        from_chain_w3=bsc.w3,
+                        destination_chain_id=avalanche.chain_id,
+                        source_pool_id=usdt.stargate_pool_id,
+                        dest_pool_id=usdc.stargate_pool_id,
+                        stargate_from_chain_contract=bsc.stargate_contract,
+                        stargate_from_chain_address=bsc.stargate_address,
+                        from_chain_explorer=bsc.explorer,
+                        gas=bsc.gas
                     )
                 )
 
-    for task in tasks:
-        logger.info(f"Bridging {mode_mapping[args.mode]}.")
-        await task
+    logger.info(f"Bridging {mode_mapping[args.mode]}.")
+    await asyncio.gather(*tasks, return_exceptions=True)
 
     logger.success("*** FINISHED ***")
 
