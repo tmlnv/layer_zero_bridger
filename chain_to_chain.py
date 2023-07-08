@@ -2,7 +2,6 @@ import random
 import asyncio
 import argparse
 import sys
-
 from typing import Coroutine
 
 from eth_typing import ChecksumAddress
