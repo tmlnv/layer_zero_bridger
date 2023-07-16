@@ -79,12 +79,12 @@ python chain_to_chain.py --mode pf
 ```
 **Optional:**
 
-Generate a new private key and its associated address if you require a fresh wallet. Execute the `modules/wallet_gen.py` script.
+Generate a new private key and its associated address if you require a fresh wallet. Execute the `modules/wallet_generator.py` script.
 
 Example:
 
 ```bash
-python wallet_generator/wallet_generator.py
+python modules/wallet_generator.py
 ```
 
 **Optional:**
