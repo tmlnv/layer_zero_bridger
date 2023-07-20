@@ -1,4 +1,5 @@
 """Helper functions"""
+import aiohttp
 from eth_account import Account
 from web3.contract import AsyncContract
 
@@ -49,3 +50,12 @@ async def get_correct_amount_and_min_amount(
 def wallet_public_address(wallet_private_key: str) -> str:
     """Function for getting public wallet adress from private key"""
     return Account.from_key(wallet_private_key).address
+
+
+async def get_token_price(token_symbol: str) -> float:
+    """Function for fetching token $ price"""
+    url = f'https://min-api.cryptocompare.com/data/price?fsym={token_symbol}&tsyms=USDT'
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            response.raise_for_status()
+            return (await response.json())['USDT']

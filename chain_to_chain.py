@@ -7,6 +7,7 @@ from typing import Coroutine
 from eth_typing import ChecksumAddress
 from web3 import AsyncWeb3
 from web3.contract import AsyncContract
+from tqdm import tqdm
 
 from config import PRIVATE_KEYS, AMOUNT_TO_SWAP
 from modules.bridger import send_token_chain_to_chain, is_balance_updated
@@ -56,7 +57,12 @@ async def chain_to_chain(
 
     start_delay = random.randint(1, 200)
     logger.info(f"START DELAY | {address} | Waiting for {start_delay} seconds.")
-    await asyncio.sleep(start_delay)
+    with tqdm(
+            total=start_delay, desc=f"Waiting START DELAY | {address}", bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}"
+    ) as pbar:
+        for i in range(start_delay):
+            await asyncio.sleep(1)
+            pbar.update(1)
 
     balance = None
     logger_cntr = 0
@@ -151,7 +157,7 @@ async def main():
                         token_from_chain_contract=polygon.usdc_contract,
                         to_chain_name=fantom.name,
                         from_chain_w3=polygon.w3,
-                        destination_chain_id=fantom.chain_id,
+                        destination_chain_id=fantom.layer_zero_chain_id,
                         source_pool_id=usdc.stargate_pool_id,
                         dest_pool_id=usdc.stargate_pool_id,
                         stargate_from_chain_contract=polygon.stargate_contract,
@@ -169,7 +175,7 @@ async def main():
                         token_from_chain_contract=polygon.usdc_contract,
                         to_chain_name=avalanche.name,
                         from_chain_w3=polygon.w3,
-                        destination_chain_id=avalanche.chain_id,
+                        destination_chain_id=avalanche.layer_zero_chain_id,
                         source_pool_id=usdc.stargate_pool_id,
                         dest_pool_id=usdc.stargate_pool_id,
                         stargate_from_chain_contract=polygon.stargate_contract,
@@ -187,7 +193,7 @@ async def main():
                         token_from_chain_contract=polygon.usdc_contract,
                         to_chain_name=bsc.name,
                         from_chain_w3=polygon.w3,
-                        destination_chain_id=bsc.chain_id,
+                        destination_chain_id=bsc.layer_zero_chain_id,
                         source_pool_id=usdc.stargate_pool_id,
                         dest_pool_id=usdt.stargate_pool_id,
                         stargate_from_chain_contract=polygon.stargate_contract,
@@ -205,7 +211,7 @@ async def main():
                         token_from_chain_contract=fantom.usdc_contract,
                         to_chain_name=polygon.name,
                         from_chain_w3=fantom.w3,
-                        destination_chain_id=polygon.chain_id,
+                        destination_chain_id=polygon.layer_zero_chain_id,
                         source_pool_id=usdc.stargate_pool_id,
                         dest_pool_id=usdc.stargate_pool_id,
                         stargate_from_chain_contract=fantom.stargate_contract,
@@ -223,7 +229,7 @@ async def main():
                         token_from_chain_contract=fantom.usdc_contract,
                         to_chain_name=avalanche.name,
                         from_chain_w3=fantom.w3,
-                        destination_chain_id=avalanche.chain_id,
+                        destination_chain_id=avalanche.layer_zero_chain_id,
                         source_pool_id=usdc.stargate_pool_id,
                         dest_pool_id=usdc.stargate_pool_id,
                         stargate_from_chain_contract=fantom.stargate_contract,
@@ -241,7 +247,7 @@ async def main():
                         token_from_chain_contract=fantom.usdc_contract,
                         to_chain_name=bsc.name,
                         from_chain_w3=fantom.w3,
-                        destination_chain_id=bsc.chain_id,
+                        destination_chain_id=bsc.layer_zero_chain_id,
                         source_pool_id=usdc.stargate_pool_id,
                         dest_pool_id=usdt.stargate_pool_id,
                         stargate_from_chain_contract=fantom.stargate_contract,
@@ -259,7 +265,7 @@ async def main():
                         token_from_chain_contract=avalanche.usdc_contract,
                         to_chain_name=polygon.name,
                         from_chain_w3=avalanche.w3,
-                        destination_chain_id=polygon.chain_id,
+                        destination_chain_id=polygon.layer_zero_chain_id,
                         source_pool_id=usdc.stargate_pool_id,
                         dest_pool_id=usdc.stargate_pool_id,
                         stargate_from_chain_contract=avalanche.stargate_contract,
@@ -277,7 +283,7 @@ async def main():
                         token_from_chain_contract=avalanche.usdc_contract,
                         to_chain_name=fantom.name,
                         from_chain_w3=avalanche.w3,
-                        destination_chain_id=fantom.chain_id,
+                        destination_chain_id=fantom.layer_zero_chain_id,
                         source_pool_id=usdc.stargate_pool_id,
                         dest_pool_id=usdc.stargate_pool_id,
                         stargate_from_chain_contract=avalanche.stargate_contract,
@@ -295,7 +301,7 @@ async def main():
                         token_from_chain_contract=avalanche.usdc_contract,
                         to_chain_name=bsc.name,
                         from_chain_w3=avalanche.w3,
-                        destination_chain_id=bsc.chain_id,
+                        destination_chain_id=bsc.layer_zero_chain_id,
                         source_pool_id=usdc.stargate_pool_id,
                         dest_pool_id=usdt.stargate_pool_id,
                         stargate_from_chain_contract=avalanche.stargate_contract,
@@ -313,7 +319,7 @@ async def main():
                         token_from_chain_contract=bsc.usdt_contract,
                         to_chain_name=polygon.name,
                         from_chain_w3=bsc.w3,
-                        destination_chain_id=polygon.chain_id,
+                        destination_chain_id=polygon.layer_zero_chain_id,
                         source_pool_id=usdt.stargate_pool_id,
                         dest_pool_id=usdc.stargate_pool_id,
                         stargate_from_chain_contract=bsc.stargate_contract,
@@ -331,7 +337,7 @@ async def main():
                         token_from_chain_contract=bsc.usdt_contract,
                         to_chain_name=fantom.name,
                         from_chain_w3=bsc.w3,
-                        destination_chain_id=fantom.chain_id,
+                        destination_chain_id=fantom.layer_zero_chain_id,
                         source_pool_id=usdt.stargate_pool_id,
                         dest_pool_id=usdc.stargate_pool_id,
                         stargate_from_chain_contract=bsc.stargate_contract,
@@ -350,7 +356,7 @@ async def main():
                         token_from_chain_contract=bsc.usdt_contract,
                         to_chain_name=avalanche.name,
                         from_chain_w3=bsc.w3,
-                        destination_chain_id=avalanche.chain_id,
+                        destination_chain_id=avalanche.layer_zero_chain_id,
                         source_pool_id=usdt.stargate_pool_id,
                         dest_pool_id=usdc.stargate_pool_id,
                         stargate_from_chain_contract=bsc.stargate_contract,

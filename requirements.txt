@@ -4,3 +4,7 @@ termcolor~=2.3.0
 python-dotenv~=1.0.0
 prettytable~=3.8.0
 colorama~=0.4.6
+tqdm~=4.65.0
+requests~=2.30.0
+hexbytes~=0.3.0
+aiohttp~=3.8.4

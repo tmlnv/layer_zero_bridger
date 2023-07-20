@@ -96,6 +96,28 @@ Example:
 ```bash
 python balance_checker.py
 ```
+
+**Optional:**
+
+Get native tokens on the destination chain to pay fees using Bungee Refuel. Configure $ amount you want to send in the `config.py` file.
+
+ ```python
+BUNGEE_AMOUNT = 10  # $ value of native asset to be bridged via Bungee Refuel
+ ```
+
+Execute the `bungee_refuel.py` script using `--mode` flag with one of possible options:
+- `pa` to refuel from Polygon to Avalanche
+- `pb` to refuel from Polygon to BSC
+- `ap` to refuel from Avalanche to Polygon
+- `ab` to refuel from Avalanche to BSC
+- `bp` to refuel from BSC to Polygon
+- `ba` to refuel from BSC to Avalanche
+Example:
+
+```bash
+python bungee_refuel.py --mode pa
+```
+
 ## Operation
 
 The main script performs the following actions for each wallet:
