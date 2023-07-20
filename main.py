@@ -1,7 +1,7 @@
 import random
 import asyncio
 
-from loguru import logger
+from tqdm import tqdm
 
 from config import PRIVATE_KEYS, TIMES
 from chain_to_chain import chain_to_chain
@@ -9,6 +9,7 @@ from modules.tokens import usdc, usdt
 from modules.chains import polygon, avalanche, bsc
 from modules.utils import wallet_public_address
 from balance_checker import get_balances
+from modules.custom_logger import logger
 
 
 async def work(wallet: str) -> None:
@@ -32,7 +33,7 @@ async def work(wallet: str) -> None:
             token_from_chain_contract=polygon.usdc_contract,
             to_chain_name=avalanche.name,
             from_chain_w3=polygon.w3,
-            destination_chain_id=avalanche.chain_id,
+            destination_chain_id=avalanche.layer_zero_chain_id,
             source_pool_id=usdc.stargate_pool_id,
             dest_pool_id=usdc.stargate_pool_id,
             stargate_from_chain_contract=polygon.stargate_contract,
@@ -43,7 +44,14 @@ async def work(wallet: str) -> None:
 
         polygon_delay = random.randint(1200, 1500)
         logger.info(f'POLYGON DELAY | {address} | Waiting for {polygon_delay} seconds.')
-        await asyncio.sleep(polygon_delay)
+        with tqdm(
+                total=polygon_delay,
+                desc=f"Waiting POLYGON DELAY | {address}",
+                bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}"
+        ) as pbar:
+            for i in range(polygon_delay):
+                await asyncio.sleep(1)
+                pbar.update(1)
 
         await chain_to_chain(
             wallet=wallet,
@@ -52,7 +60,7 @@ async def work(wallet: str) -> None:
             token_from_chain_contract=avalanche.usdc_contract,
             to_chain_name=bsc.name,
             from_chain_w3=avalanche.w3,
-            destination_chain_id=bsc.chain_id,
+            destination_chain_id=bsc.layer_zero_chain_id,
             source_pool_id=usdc.stargate_pool_id,
             dest_pool_id=usdt.stargate_pool_id,
             stargate_from_chain_contract=avalanche.stargate_contract,
@@ -63,7 +71,14 @@ async def work(wallet: str) -> None:
 
         avalanche_delay = random.randint(1200, 1500)
         logger.info(f'AVALANCHE DELAY | {address} | Waiting for {avalanche_delay} seconds.')
-        await asyncio.sleep(avalanche_delay)
+        with tqdm(
+                total=avalanche_delay,
+                desc=f"Waiting AVALANCHE DELAY | {address}",
+                bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}"
+        ) as pbar:
+            for i in range(avalanche_delay):
+                await asyncio.sleep(1)
+                pbar.update(1)
 
         await chain_to_chain(
             wallet=wallet,
@@ -72,7 +87,7 @@ async def work(wallet: str) -> None:
             token_from_chain_contract=bsc.usdt_contract,
             to_chain_name=polygon.name,
             from_chain_w3=bsc.w3,
-            destination_chain_id=polygon.chain_id,
+            destination_chain_id=polygon.layer_zero_chain_id,
             source_pool_id=usdt.stargate_pool_id,
             dest_pool_id=usdc.stargate_pool_id,
             stargate_from_chain_contract=bsc.stargate_contract,
@@ -83,7 +98,12 @@ async def work(wallet: str) -> None:
 
         bsc_delay = random.randint(100, 300)
         logger.info(f'BSC DELAY | {address} | Waiting for {bsc_delay} seconds.')
-        await asyncio.sleep(bsc_delay)
+        with tqdm(
+                total=bsc_delay, desc=f"Waiting BSC DELAY | {address}", bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}"
+        ) as pbar:
+            for i in range(bsc_delay):
+                await asyncio.sleep(1)
+                pbar.update(1)
 
         counter += 1
 
