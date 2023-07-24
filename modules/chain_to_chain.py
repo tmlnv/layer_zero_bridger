@@ -1,6 +1,5 @@
 import random
 import asyncio
-import argparse
 import sys
 from typing import Coroutine
 
@@ -111,10 +110,7 @@ async def chain_to_chain(
     logger.success(f"LAYERZEROSCAN | {address} | Transaction: https://layerzeroscan.com/tx/{bridging_txn_hash.hex()}")
 
 
-async def main():
-    parser = argparse.ArgumentParser(
-        description="Optional use case. Bridge tokens from one chain to another once for specified wallets."
-    )
+async def main(args: str):
 
     mode_mapping = {
         "pf": "polygon-fantom",
@@ -131,19 +127,18 @@ async def main():
         "ba": "bsc-avalanche",
     }
 
-    parser.add_argument(
-        "--mode",
-        type=str,
-        choices=mode_mapping.keys(),
-        help="Bridging mode"
-    )
-
-    args = parser.parse_args()
-    if args.mode is None:
-        print("Error: the --mode argument is required")
+    logger.info(args)
+    if args is None:
+        print("Error: the route argument is required")
+        sys.exit(2)
+    elif args not in mode_mapping.keys():
+        logger.error(
+            f"Unsupported route. Supported routes:\n{list(mode_mapping.values())}\n"
+            "Usage example: type 'pa' for 'polygon-avalanche' route"
+        )
         sys.exit(2)
 
-    mode = mode_mapping[args.mode]
+    mode = mode_mapping[args]
 
     tasks: list[Coroutine] = []
     for wallet in PRIVATE_KEYS:
@@ -366,11 +361,7 @@ async def main():
                     )
                 )
 
-    logger.info(f"Bridging {mode_mapping[args.mode]}.")
+    logger.info(f"Bridging {mode_mapping[args]}.")
     await asyncio.gather(*tasks, return_exceptions=True)
 
     logger.success("*** FINISHED ***")
-
-
-if __name__ == "__main__":
-    asyncio.run(main())

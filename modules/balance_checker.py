@@ -121,7 +121,7 @@ def print_results():
     print(colored_table)
 
 
-def get_balances():
+async def get_balances():
     """ Get all balances for private keys of wallets provided"""
     public_wallets = []
     for private_key in PRIVATE_KEYS:
@@ -133,10 +133,6 @@ def get_balances():
         for chain in supported_chains:
             BALANCES[wallet].update({chain.name: {}})
 
-    asyncio.run(_main(wallets=public_wallets, chains=supported_chains))
+    await _main(wallets=public_wallets, chains=supported_chains)
 
     print_results()
-
-
-if __name__ == '__main__':
-    get_balances()
