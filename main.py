@@ -1,121 +1,61 @@
-import random
+"""Main script with CLI interface for all modules"""
+import argparse
 import asyncio
 
-from tqdm import tqdm
-
-from config import PRIVATE_KEYS, TIMES
-from chain_to_chain import chain_to_chain
-from modules.tokens import usdc, usdt
-from modules.chains import polygon, avalanche, bsc
-from modules.utils import wallet_public_address
-from balance_checker import get_balances
-from modules.custom_logger import logger
-
-
-async def work(wallet: str) -> None:
-    """Transfer cycle function. It sends USDC from Polygon Avalanche and then to BSC as USDT.
-    From BSC USDT tokens are bridged to Polygon into USDC.
-    It runs such cycles N times, where N - number of cycles specified if config.py
-
-    Args:
-        wallet: wallet address
-    """
-    counter = 0
-
-    address = wallet_public_address(wallet)
-
-    while counter < TIMES:
-
-        await chain_to_chain(
-            wallet=wallet,
-            from_chain_name=polygon.name,
-            token=usdc.name,
-            token_from_chain_contract=polygon.usdc_contract,
-            to_chain_name=avalanche.name,
-            from_chain_w3=polygon.w3,
-            destination_chain_id=avalanche.layer_zero_chain_id,
-            source_pool_id=usdc.stargate_pool_id,
-            dest_pool_id=usdc.stargate_pool_id,
-            stargate_from_chain_contract=polygon.stargate_contract,
-            stargate_from_chain_address=polygon.stargate_address,
-            from_chain_explorer=polygon.explorer,
-            gas=polygon.gas
-        )
-
-        polygon_delay = random.randint(1200, 1500)
-        logger.info(f'POLYGON DELAY | {address} | Waiting for {polygon_delay} seconds.')
-        with tqdm(
-                total=polygon_delay,
-                desc=f"Waiting POLYGON DELAY | {address}",
-                bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}"
-        ) as pbar:
-            for i in range(polygon_delay):
-                await asyncio.sleep(1)
-                pbar.update(1)
-
-        await chain_to_chain(
-            wallet=wallet,
-            from_chain_name=avalanche.name,
-            token=usdc.name,
-            token_from_chain_contract=avalanche.usdc_contract,
-            to_chain_name=bsc.name,
-            from_chain_w3=avalanche.w3,
-            destination_chain_id=bsc.layer_zero_chain_id,
-            source_pool_id=usdc.stargate_pool_id,
-            dest_pool_id=usdt.stargate_pool_id,
-            stargate_from_chain_contract=avalanche.stargate_contract,
-            stargate_from_chain_address=avalanche.stargate_address,
-            from_chain_explorer=avalanche.explorer,
-            gas=avalanche.gas
-        )
-
-        avalanche_delay = random.randint(1200, 1500)
-        logger.info(f'AVALANCHE DELAY | {address} | Waiting for {avalanche_delay} seconds.')
-        with tqdm(
-                total=avalanche_delay,
-                desc=f"Waiting AVALANCHE DELAY | {address}",
-                bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}"
-        ) as pbar:
-            for i in range(avalanche_delay):
-                await asyncio.sleep(1)
-                pbar.update(1)
-
-        await chain_to_chain(
-            wallet=wallet,
-            from_chain_name=bsc.name,
-            token=usdt.name,
-            token_from_chain_contract=bsc.usdt_contract,
-            to_chain_name=polygon.name,
-            from_chain_w3=bsc.w3,
-            destination_chain_id=polygon.layer_zero_chain_id,
-            source_pool_id=usdt.stargate_pool_id,
-            dest_pool_id=usdc.stargate_pool_id,
-            stargate_from_chain_contract=bsc.stargate_contract,
-            stargate_from_chain_address=bsc.stargate_address,
-            from_chain_explorer=bsc.explorer,
-            gas=bsc.gas
-        )
-
-        bsc_delay = random.randint(100, 300)
-        logger.info(f'BSC DELAY | {address} | Waiting for {bsc_delay} seconds.')
-        with tqdm(
-                total=bsc_delay, desc=f"Waiting BSC DELAY | {address}", bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}"
-        ) as pbar:
-            for i in range(bsc_delay):
-                await asyncio.sleep(1)
-                pbar.update(1)
-
-        counter += 1
-
-    logger.success(f'DONE | {address}')
+from modules.bungee_refuel import main as bungee_refuel
+from modules.chain_to_chain import main as chain_to_chain
+from modules.balance_checker import get_balances as balance_checker
+from modules.wallet_generator import create_wallet as wallet_generator
+from modules.core_script import main as core_script
 
 
 async def main():
-    await asyncio.gather(*[work(wallet) for wallet in PRIVATE_KEYS], return_exceptions=True)
+    """ Main script. Without CLI arguments runs core_script.py according to config.
+        With CLI arguments can be used for wallet generation, one-way asset bridging via Layer Zero,
+        balance checking and bridging into native tokens to pay for gas fees via Bungee Refuel.
+    """
+    parser = argparse.ArgumentParser(description="Layer Zero Bridger modules")
 
-    logger.success(f'*** FINISHED ***')
+    mode_mapping = {
+        "refuel": "bungee_refuel",
+        "one-way": "chain_to_chain",
+        "balance": "balance_checker",
+        "new-wallet": "wallet_generator",
+        "default": "core_script",
+    }
 
+    parser.add_argument(
+        "--mode",
+        type=str,
+        choices=mode_mapping.keys(),
+        default="default",
+        help="Module name"
+    )
 
-if __name__ == '__main__':
-    get_balances()
+    parser.add_argument(
+        "routing_mode",
+        type=str,
+        nargs='?',
+        default=None,
+        help="Routing mode for one-way and Bungee Refuel operations"
+    )
+
+    args = parser.parse_args()
+
+    mode = mode_mapping[args.mode]
+
+    match mode:
+        case "chain_to_chain":
+            await chain_to_chain(args.routing_mode)
+        case "bungee_refuel":
+            await bungee_refuel(args.routing_mode)
+        case "balance_checker":
+            await balance_checker()
+        case "wallet_generator":
+            wallet_generator()
+        case "core_script":  # default
+            await balance_checker()
+            await core_script()
+
+if __name__ == "__main__":
     asyncio.run(main())

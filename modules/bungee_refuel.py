@@ -1,4 +1,3 @@
-import argparse
 import asyncio
 import sys
 from typing import Coroutine
@@ -80,7 +79,6 @@ async def _send_transaction(address: str, from_chain: Chain, transaction: dict, 
         transaction_hash = await from_chain.w3.eth.send_raw_transaction(signed_transaction.rawTransaction)
     except Exception:
         logger.error("BUNGEE REFUEL | {address} |Problem sending transaction. Probably wallet balance is too low")
-    logger.debug('here')
     logger.info(f'BUNGEE REFUEL | {address} | Transaction: https://{from_chain.explorer}/tx/{transaction_hash.hex()}')
     receipt = await from_chain.w3.eth.wait_for_transaction_receipt(transaction_hash)
 
@@ -100,10 +98,7 @@ async def bungee_refuel(from_chain: Chain, to_chain: Chain, private_key: str, am
     await _send_transaction(address=address, from_chain=from_chain, transaction=transaction, private_key=private_key)
 
 
-async def main():
-    parser = argparse.ArgumentParser(
-        description="Optional use case. Use Bungee Refuel for specified wallets."
-    )
+async def main(args: str):
 
     mode_mapping = {
         "pa": "polygon-avalanche",
@@ -114,19 +109,17 @@ async def main():
         "ba": "bsc-avalanche",
     }
 
-    parser.add_argument(
-        "--mode",
-        type=str,
-        choices=mode_mapping.keys(),
-        help="Bridging mode"
-    )
-
-    args = parser.parse_args()
-    if args.mode is None:
-        print("Error: the --mode argument is required")
+    if args is None:
+        logger.error("Error: the route argument is required")
+        sys.exit(2)
+    elif args not in mode_mapping.keys():
+        logger.error(
+            f"Unsupported route. Supported routes:\n{list(mode_mapping.values())}\n"
+            "Usage example: type 'pa' for 'polygon-avalanche' route"
+        )
         sys.exit(2)
 
-    mode = mode_mapping[args.mode]
+    mode = mode_mapping[args]
 
     tasks: list[Coroutine] = []
     logger.info(PRIVATE_KEYS)
@@ -188,11 +181,7 @@ async def main():
                     )
                 )
 
-    logger.info(f"Doing Bungee Refuel {mode_mapping[args.mode]}.")
+    logger.info(f"Doing Bungee Refuel {mode_mapping[args]}.")
     await asyncio.gather(*tasks, return_exceptions=True)
 
     logger.success("*** FINISHED ***")
-
-
-if __name__ == '__main__':
-    asyncio.run(main())
