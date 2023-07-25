@@ -1,6 +1,7 @@
 # Layer Zero Bridger
 
-The Layer Zero Bridger is a Python script that automates the process of transferring USDC or USDT (stablecoin cryptocurrencies) between different blockchains (Polygon -> Avalanche -> BSC -> Polygon in main script). It uses a set of pre-configured wallet addresses to perform transfers in both directions and repeat the process a configurable number of times.
+The Layer Zero Bridger is a Python script that automates the process of transferring USDC or USDT (stablecoin cryptocurrencies) between different blockchains (Polygon -> Avalanche -> BSC -> Polygon as a default route). It uses a set of pre-configured wallet addresses to perform transfers in both directions and repeat the process a configurable number of times.
+In addition to this, it is also possible to use script for Bungee Refuel, wallet balance checking, new wallets generation and more.
 
 ![main.py script logger example for one wallet](https://drive.google.com/uc?export=view&id=1KgGmqYPQT9uuLR_vRnfuxozmQN0mqvgz)
 
@@ -33,20 +34,24 @@ The Layer Zero Bridger is a Python script that automates the process of transfer
 
 3. Configure your wallets and number of cycles:
 
-    Specify the wallet keys in the `private_keys.example.env` file and run a command below.
+    Specify the wallet keys in the `private_keys.example.env` file and run a command below.  
+    _Note_: keys should be specified with a name for each key in a `KEY=value` way.
 
    ```bash
    mv private_keys.example.env private_keys.env
    ```
    
-    In the `config.py` file, specify the wallet keys and the number of transfer cycles you want to run.
+    In the `config.py` file, specify the min and max $ amounts for transferring, the number of transfer cycles you want to run and a $ amount for Bungee Refueling.
 
     ```python
+    AMOUNT_MIN = 100  # Min amount to bridge
+    AMOUNT_MAX = 150  # Max amount to bridge
     TIMES = 10  # Number of transfer cycles
+    BUNGEE_AMOUNT = 10  # $ value of native asset to be bridged via Bungee Refuel
     ```
     **Warning: Never disclose your private keys. They are sensitive information.**
 
-## Running the Script
+## Usage
 
 Execute the `main.py` script:
 
@@ -54,11 +59,27 @@ Execute the `main.py` script:
 python main.py
 ```
 
-### Modules
+## Operation
 
-**Optional:**
+The main script performs the following actions for each wallet:
 
-Execute only separated one-time bridging runs if you want just to transfer assets. Consider token availability on both departure and destination chains. Execute the `chain_to_chain.py` script using `--mode` flag with one of possible options:
+1. After a random delay of 1 to 200 seconds, it initiates a USDC transfer from Polygon to Avalanche.
+2. It waits for a random period between 1200 and 1500 seconds.
+3. Then, it initiates a USDC transfer from Avalanche to BSC. USDT tokens are received on BSC.
+4. It waits for a random period between 1200 and 1500 seconds.
+5. Then, it initiates a USDT transfer from BSC back to Polygon. USDC tokens are received on Polygon.
+6. It waits for a random period between 100 and 300 seconds.
+7. These steps are repeated a predefined number of times (`TIMES` in `config.py`).
+
+The script logs all its actions and reports when each wallet's transfers are done and when all tasks are finished.
+
+## Modules usage
+
+To use separate modules, execute the `main.py` script using `--mode` flag with one of possible options:
+
+### One way bridge
+
+Execute only separated one-time bridging runs if you want just to transfer assets. Consider token availability on both departure and destination chains. Execute the `main.py` script using `--mode one-way` flag with one of possible options:
 - `pf` to bridge from Polygon to Fantom
 - `pa` to bridge from Polygon to Avalanche
 - `pb` to bridge from Polygon to BSC
@@ -75,37 +96,32 @@ Execute only separated one-time bridging runs if you want just to transfer asset
 Example:
 
 ```bash
-python chain_to_chain.py --mode pf
+python main.py --mode one-way pf
 ```
-**Optional:**
+### New wallet
 
-Generate a new private key and its associated address if you require a fresh wallet. Execute the `modules/wallet_generator.py` script.
+Generate a new private key and its associated address if you require a fresh wallet. Execute the `main.py` script using `--mode new-wallet` flag.
 
 Example:
 
 ```bash
-python modules/wallet_generator.py
+python main.py --mode new-wallet
 ```
 
-**Optional:**
+### Checking Balances
 
-Check wallet balances. Execute the `balance_checker.py` script.
+Check wallet balances. Execute the `main.py` script using `--mode balance` flag.
 
 Example:
 
 ```bash
-python balance_checker.py
+python main.py --mode balance
 ```
 
-**Optional:**
+### Bungee Refuel
 
-Get native tokens on the destination chain to pay fees using Bungee Refuel. Configure $ amount you want to send in the `config.py` file.
-
- ```python
-BUNGEE_AMOUNT = 10  # $ value of native asset to be bridged via Bungee Refuel
- ```
-
-Execute the `bungee_refuel.py` script using `--mode` flag with one of possible options:
+Get native tokens on the destination chain to pay fees using Bungee Refuel.  
+Execute only separated one-time bridging runs if you want just to transfer assets. Consider token availability on both departure and destination chains. Execute the `main.py` script using `--mode refuel` flag with one of possible options:
 - `pa` to refuel from Polygon to Avalanche
 - `pb` to refuel from Polygon to BSC
 - `ap` to refuel from Avalanche to Polygon
@@ -115,22 +131,8 @@ Execute the `bungee_refuel.py` script using `--mode` flag with one of possible o
 Example:
 
 ```bash
-python bungee_refuel.py --mode pa
+python main.py --mode refuel pa
 ```
-
-## Operation
-
-The main script performs the following actions for each wallet:
-
-1. After a random delay of 1 to 200 seconds, it initiates a USDC transfer from Polygon to Avalanche.
-2. It waits for a random period between 1200 and 1500 seconds.
-3. Then, it initiates a USDC transfer from Avalanche to BSC. USDT tokens are received on BSC.
-4. It waits for a random period between 1200 and 1500 seconds.
-5. Then, it initiates a USDT transfer from BSC back to Polygon. USDC tokens are received on Polygon.
-6. It waits for a random period between 100 and 300 seconds.
-7. These steps are repeated a predefined number of times (`TIMES` in `config.py`).
-
-The script logs all its actions and reports when each wallet's transfers are done and when all tasks are finished.
 
 ## Disclaimer
 
