@@ -122,5 +122,5 @@ optimism = Chain(
     layer_zero_chain_id=111,
     bungee_chain_id=10,
     explorer='optimistic.etherscan.io',
-    gas=400_000
+    gas=700_000
 )
