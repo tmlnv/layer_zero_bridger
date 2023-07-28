@@ -120,8 +120,7 @@ python main.py --mode balance
 
 ### Bungee Refuel
 
-Get native tokens on the destination chain to pay fees using Bungee Refuel.  
-Execute only separated one-time bridging runs if you want just to transfer assets. Consider token availability on both departure and destination chains. Execute the `main.py` script using `--mode refuel` flag with one of possible options:
+Get native tokens on the destination chain to pay fees using Bungee Refuel. Execute the `main.py` script using `--mode refuel` flag with one of possible options:
 - `pa` to refuel from Polygon to Avalanche
 - `pb` to refuel from Polygon to BSC
 - `ap` to refuel from Avalanche to Polygon
@@ -133,6 +132,7 @@ Example:
 ```bash
 python main.py --mode refuel pa
 ```
+_Note_: Consider that Bungee Refuel has different limits for different chains.
 
 ## Disclaimer
 

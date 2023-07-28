@@ -37,7 +37,7 @@ async def work(wallet: str) -> None:
             source_pool_id=usdc.stargate_pool_id,
             dest_pool_id=usdc.stargate_pool_id,
             stargate_from_chain_contract=polygon.stargate_contract,
-            stargate_from_chain_address=polygon.stargate_address,
+            stargate_from_chain_address=polygon.stargate_router_address,
             from_chain_explorer=polygon.explorer,
             gas=polygon.gas
         )
@@ -64,7 +64,7 @@ async def work(wallet: str) -> None:
             source_pool_id=usdc.stargate_pool_id,
             dest_pool_id=usdt.stargate_pool_id,
             stargate_from_chain_contract=avalanche.stargate_contract,
-            stargate_from_chain_address=avalanche.stargate_address,
+            stargate_from_chain_address=avalanche.stargate_router_address,
             from_chain_explorer=avalanche.explorer,
             gas=avalanche.gas
         )
@@ -91,7 +91,7 @@ async def work(wallet: str) -> None:
             source_pool_id=usdt.stargate_pool_id,
             dest_pool_id=usdc.stargate_pool_id,
             stargate_from_chain_contract=bsc.stargate_contract,
-            stargate_from_chain_address=bsc.stargate_address,
+            stargate_from_chain_address=bsc.stargate_router_address,
             from_chain_explorer=bsc.explorer,
             gas=bsc.gas
         )
