@@ -3,7 +3,7 @@
 The Layer Zero Bridger is a Python script that automates the process of transferring USDC or USDT (stablecoin cryptocurrencies) between different blockchains (Polygon -> Avalanche -> BSC -> Polygon as a default route). It uses a set of pre-configured wallet addresses to perform transfers in both directions and repeat the process a configurable number of times.
 In addition to this, it is also possible to use script for Bungee Refuel, wallet balance checking, new wallets generation and more.
 
-![main.py script logger example for one wallet](https://drive.google.com/uc?export=view&id=1KgGmqYPQT9uuLR_vRnfuxozmQN0mqvgz)
+![main.py script logger example for one wallet](https://drive.google.com/uc?export=view&id=1D-kc1iyD6cSAHgX4EjYQA-lfJY_sTMJz)
 
 ## Supported chains and tokens
 
@@ -120,8 +120,7 @@ python main.py --mode balance
 
 ### Bungee Refuel
 
-Get native tokens on the destination chain to pay fees using Bungee Refuel.  
-Execute only separated one-time bridging runs if you want just to transfer assets. Consider token availability on both departure and destination chains. Execute the `main.py` script using `--mode refuel` flag with one of possible options:
+Get native tokens on the destination chain to pay fees using Bungee Refuel. Execute the `main.py` script using `--mode refuel` flag with one of possible options:
 - `pa` to refuel from Polygon to Avalanche
 - `pb` to refuel from Polygon to BSC
 - `ap` to refuel from Avalanche to Polygon
@@ -133,6 +132,7 @@ Example:
 ```bash
 python main.py --mode refuel pa
 ```
+_Note_: Consider that Bungee Refuel has different limits for different chains.
 
 ## Disclaimer
 

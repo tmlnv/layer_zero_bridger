@@ -6,17 +6,19 @@ from colorama import Fore, Style
 
 from config import PRIVATE_KEYS
 from modules.utils import get_token_decimals, get_token_symbol, wallet_public_address
-from modules.chains import Chain, polygon, avalanche, bsc
+from modules.chains import Chain, polygon, avalanche, bsc, arbitrum, optimism
 from modules.custom_logger import logger
 
 
 tokens = {
     'POLYGON': polygon.usdc_contract,
     'AVALANCHE': avalanche.usdc_contract,
-    'BSC': bsc.usdt_contract
+    'BSC': bsc.usdt_contract,
+    'ARBITRUM': arbitrum.usdt_contract,
+    'OPTIMISM': optimism.usdc_contract
 }
 
-supported_chains = [polygon, avalanche, bsc]
+supported_chains = [polygon, avalanche, bsc, arbitrum, optimism]
 
 
 BALANCES = dict()
