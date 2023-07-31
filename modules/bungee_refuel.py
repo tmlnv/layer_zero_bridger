@@ -43,7 +43,6 @@ async def _get_bungee_limits(from_chain: Chain, to_chain: Chain) -> (int, int):
                         raise ValueError(msg)
                     destination_chain_limits: dict = limit
 
-    logger.info(f"LIMITS {destination_chain_limits['minAmount']}, {destination_chain_limits['maxAmount']}")
     return int(destination_chain_limits['minAmount']), int(destination_chain_limits['maxAmount'])
 
 
@@ -54,12 +53,18 @@ async def _create_transaction(address: str, from_chain: Chain, to_chain: Chain, 
 
     min_bungee_limit = min_bungee_limit / 10 ** from_chain.native_token_decimals
     max_bungee_limit = max_bungee_limit / 10 ** from_chain.native_token_decimals
+    logger.info(
+        f"BUNGEE LIMITS | " +
+        (
+            limits_msg := f"Min is {min_bungee_limit} {from_chain.native_asset_symbol}, "
+                          f"Max is {max_bungee_limit} {from_chain.native_asset_symbol}"
+        )
+    )
 
     if amount < min_bungee_limit or amount > max_bungee_limit:
         logger.error(msg := (
-            f"BUNGEE AMOUNTS | {address} |Transferring {amount} {from_chain.native_asset_symbol} is not possible."
-            f" Min is {min_bungee_limit} {from_chain.native_asset_symbol}, "
-            f"Max is {max_bungee_limit} {from_chain.native_asset_symbol}"
+            f"BUNGEE AMOUNTS | {address} | Transferring {amount} {from_chain.native_asset_symbol} is not possible. " +
+            limits_msg
         ))
         raise ValueError(msg)
 
@@ -122,7 +127,7 @@ async def main(args: str):
         "arbp": "arbitrum-polygon",
         "arba": "arbitrum-avalanche",
         "arbb": "arbitrum-bsc",
-        "arbo": "arbuitrum-optimism",
+        "arbo": "arbitrum-optimism",
         "op": "optimism-polygon",
         "oa": "optimism-avalanche",
         "ob": "optimism-bsc",

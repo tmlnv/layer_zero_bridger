@@ -3,7 +3,7 @@
 The Layer Zero Bridger is a Python script that automates the process of transferring USDC or USDT (stablecoin cryptocurrencies) between different blockchains (Polygon -> Avalanche -> BSC -> Polygon as a default route). It uses a set of pre-configured wallet addresses to perform transfers in both directions and repeat the process a configurable number of times.
 In addition to this, it is also possible to use script for Bungee Refuel, wallet balance checking, new wallets generation and more.
 
-![main.py script logger example for one wallet](https://drive.google.com/uc?export=view&id=1KgGmqYPQT9uuLR_vRnfuxozmQN0mqvgz)
+![main.py script logger example for one wallet](https://drive.google.com/uc?export=view&id=1D-kc1iyD6cSAHgX4EjYQA-lfJY_sTMJz)
 
 ## Supported chains and tokens
 
