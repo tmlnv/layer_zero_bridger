@@ -9,7 +9,7 @@ import random
 import aiohttp
 from web3 import Web3
 
-from modules.chains import Chain, polygon, avalanche, bsc, arbitrum, optimism
+from modules.chains import Chain, polygon, avalanche, bsc, arbitrum, optimism, base
 from config import PRIVATE_KEYS, BUNGEE_AMOUNT
 from modules.custom_logger import logger
 from modules.utils import wallet_public_address, get_token_price
@@ -116,22 +116,32 @@ async def main(args: str):
         "pb": "polygon-bsc",
         "parb": "polygon-arbitrum",
         "po": "polygon-optimism",
+        "pbase": "polygon-base",
         "ap": "avalanche-polygon",
         "ab": "avalanche-bsc",
         "aarb": "avalanche-arbitrum",
         "ao": "avalanche-optimism",
+        "abase": "avalanche-base",
         "bp": "bsc-polygon",
         "ba": "bsc-avalanche",
         "barb": "bsc-arbitrum",
         "bo": "bsc-optimism",
+        "bbase": "bsc-base",
         "arbp": "arbitrum-polygon",
         "arba": "arbitrum-avalanche",
         "arbb": "arbitrum-bsc",
         "arbo": "arbitrum-optimism",
+        "arbbase": "arbitrum-base",
         "op": "optimism-polygon",
         "oa": "optimism-avalanche",
         "ob": "optimism-bsc",
-        "oarb": "optimism-arbitrum"
+        "oarb": "optimism-arbitrum",
+        "obase": "optimism-base",
+        "basep": "base-polygon",
+        "basea": "base-avalanche",
+        "baseb": "base-bsc",
+        "basearb": "base-arbitrum",
+        "baseo": "base-optimism"
     }
 
     if args is None:
@@ -185,6 +195,15 @@ async def main(args: str):
                         amount=await get_bungee_refuel_amount(polygon.native_asset_symbol)
                     )
                 )
+            case "polygon-base":
+                tasks.append(
+                    bungee_refuel(
+                        from_chain=polygon,
+                        to_chain=base,
+                        private_key=private_key,
+                        amount=await get_bungee_refuel_amount(polygon.native_asset_symbol)
+                    )
+                )
             case "avalanche-polygon":
                 tasks.append(
                     bungee_refuel(
@@ -217,6 +236,15 @@ async def main(args: str):
                     bungee_refuel(
                         from_chain=avalanche,
                         to_chain=optimism,
+                        private_key=private_key,
+                        amount=await get_bungee_refuel_amount(avalanche.native_asset_symbol)
+                    )
+                )
+            case "avalanche-base":
+                tasks.append(
+                    bungee_refuel(
+                        from_chain=avalanche,
+                        to_chain=base,
                         private_key=private_key,
                         amount=await get_bungee_refuel_amount(avalanche.native_asset_symbol)
                     )
@@ -257,6 +285,15 @@ async def main(args: str):
                         amount=await get_bungee_refuel_amount(bsc.native_asset_symbol)
                     )
                 )
+            case "bsc-base":
+                tasks.append(
+                    bungee_refuel(
+                        from_chain=bsc,
+                        to_chain=base,
+                        private_key=private_key,
+                        amount=await get_bungee_refuel_amount(bsc.native_asset_symbol)
+                    )
+                )
             case "arbitrum-polygon":
                 tasks.append(
                     bungee_refuel(
@@ -289,6 +326,15 @@ async def main(args: str):
                     bungee_refuel(
                         from_chain=arbitrum,
                         to_chain=optimism,
+                        private_key=private_key,
+                        amount=await get_bungee_refuel_amount(arbitrum.native_asset_symbol)
+                    )
+                )
+            case "arbitrum-base":
+                tasks.append(
+                    bungee_refuel(
+                        from_chain=arbitrum,
+                        to_chain=base,
                         private_key=private_key,
                         amount=await get_bungee_refuel_amount(arbitrum.native_asset_symbol)
                     )
@@ -327,6 +373,60 @@ async def main(args: str):
                         to_chain=arbitrum,
                         private_key=private_key,
                         amount=await get_bungee_refuel_amount(optimism.native_asset_symbol)
+                    )
+                )
+            case "optimism-base":
+                tasks.append(
+                    bungee_refuel(
+                        from_chain=optimism,
+                        to_chain=base,
+                        private_key=private_key,
+                        amount=await get_bungee_refuel_amount(optimism.native_asset_symbol)
+                    )
+                )
+            case "base-polygon":
+                tasks.append(
+                    bungee_refuel(
+                        from_chain=base,
+                        to_chain=polygon,
+                        private_key=private_key,
+                        amount=await get_bungee_refuel_amount(base.native_asset_symbol)
+                    )
+                )
+            case "base-avalanche":
+                tasks.append(
+                    bungee_refuel(
+                        from_chain=base,
+                        to_chain=avalanche,
+                        private_key=private_key,
+                        amount=await get_bungee_refuel_amount(base.native_asset_symbol)
+                    )
+                )
+            case "base-bsc":
+                tasks.append(
+                    bungee_refuel(
+                        from_chain=base,
+                        to_chain=bsc,
+                        private_key=private_key,
+                        amount=await get_bungee_refuel_amount(base.native_asset_symbol)
+                    )
+                )
+            case "base-arbitrum":
+                tasks.append(
+                    bungee_refuel(
+                        from_chain=base,
+                        to_chain=arbitrum,
+                        private_key=private_key,
+                        amount=await get_bungee_refuel_amount(base.native_asset_symbol)
+                    )
+                )
+            case "base-optimism":
+                tasks.append(
+                    bungee_refuel(
+                        from_chain=base,
+                        to_chain=optimism,
+                        private_key=private_key,
+                        amount=await get_bungee_refuel_amount(base.native_asset_symbol)
                     )
                 )
 
