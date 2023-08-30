@@ -6,7 +6,7 @@ from colorama import Fore, Style
 
 from config import PRIVATE_KEYS
 from modules.utils import get_token_decimals, get_token_symbol, wallet_public_address
-from modules.chains import Chain, polygon, avalanche, bsc, arbitrum, optimism
+from modules.chains import Chain, polygon, avalanche, bsc, arbitrum, optimism, base
 from modules.custom_logger import logger
 
 
@@ -15,11 +15,13 @@ tokens = {
     'AVALANCHE': avalanche.usdc_contract,
     'BSC': bsc.usdt_contract,
     'ARBITRUM': arbitrum.usdt_contract,
-    'OPTIMISM': optimism.usdc_contract
+    'OPTIMISM': optimism.usdc_contract,
+    'BASE': base.usdc_contract
 }
 
-supported_chains = [polygon, avalanche, bsc, arbitrum, optimism]
+supported_chains = [polygon, avalanche, bsc, arbitrum, optimism, base]
 
+TOKEN_SYMBOLS = ["USDC", "USDT", "USDbC"]
 
 BALANCES = dict()
 
@@ -90,14 +92,14 @@ def print_results():
     """ Print results in a table"""
     column_names = ["Wallet"]
     for chain in supported_chains:
-        for token in ["USDC", "USDT"]:
+        for token in TOKEN_SYMBOLS:
             column_names.append(f"{chain.name}_{token}")
 
     columns_to_drop = set(column_names[1:])
 
     for wallet, chains in BALANCES.items():
         for chain in supported_chains:
-            for token in ["USDC", "USDT"]:
+            for token in TOKEN_SYMBOLS:
                 balance = chains.get(chain.name, {}).get(token, None)
                 column_name = f"{chain.name}_{token}"
 

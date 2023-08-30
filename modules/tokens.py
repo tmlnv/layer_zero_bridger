@@ -12,6 +12,7 @@ class Token:
             bsc_address: Optional[str],
             arbitrum_address: str,
             optimism_address: Optional[str],
+            base_address: Optional[str],
             stargate_pool_id: int
     ):
         self.name = name
@@ -21,6 +22,7 @@ class Token:
         self.bsc_address = bsc_address
         self.arbitrum_address = arbitrum_address
         self.optimism_adress = optimism_address
+        self.base_address = base_address
         self.stargate_pool_id = stargate_pool_id
 
 
@@ -32,6 +34,7 @@ usdc = Token(
     bsc_address=None,
     arbitrum_address='0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
     optimism_address='0x7f5c764cbc14f9669b88837ca1490cca17c31607',
+    base_address='0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA',
     stargate_pool_id=1
 )
 
@@ -43,6 +46,7 @@ usdt = Token(
     bsc_address='0x55d398326f99059fF775485246999027B3197955',
     arbitrum_address='0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
     optimism_address=None,
+    base_address=None,
     stargate_pool_id=2
 )
 
@@ -52,5 +56,6 @@ token_addresses = {
     usdc.avalanche_address.lower(): 'AVALANCHE',
     usdt.bsc_address.lower(): 'BSC',
     usdt.arbitrum_address.lower(): 'ARBITRUM',
-    usdc.optimism_adress.lower(): 'OPTIMISM'
+    usdc.optimism_adress.lower(): 'OPTIMISM',
+    usdc.base_address.lower(): 'BASE'
 }

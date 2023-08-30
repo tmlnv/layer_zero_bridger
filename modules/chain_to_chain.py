@@ -11,7 +11,7 @@ from tqdm import tqdm
 from config import PRIVATE_KEYS, AMOUNT_TO_SWAP
 from modules.bridger import send_token_chain_to_chain, is_balance_updated
 from modules.tokens import usdc, usdt
-from modules.chains import polygon, avalanche, bsc, fantom, arbitrum, optimism
+from modules.chains import polygon, avalanche, bsc, fantom, arbitrum, optimism, base
 from modules.utils import get_correct_amount_and_min_amount, get_token_decimals, wallet_public_address
 from modules.custom_logger import logger
 
@@ -118,6 +118,7 @@ async def main(args: str):
         "pb": "polygon-bsc",
         "parb": "polygon-arbitrum",
         "po": "polygon-optimism",
+        "pbase": "polygon-base",
         "fp": "fantom-polygon",
         "fa": "fantom-avalanche",
         "fb": "fantom-bsc",
@@ -126,19 +127,28 @@ async def main(args: str):
         "ab": "avalanche-bsc",
         "aarb": "avalanche-arbitrum",
         "ao": "avalanche-optimism",
+        "abase": "avalanche-base",
         "bp": "bsc-polygon",
         "bf": "bsc-fantom",
         "ba": "bsc-avalanche",
         "barb": "bsc-arbitrum",
         "bo": "bsc-optimism",
+        "bbase": "bsc-base",
         "arbp": "arbitrum-polygon",
         "arba": "arbitrum-avalanche",
         "arbb": "arbitrum-bsc",
         "arbo": "arbuitrum-optimism",
+        "arbbase": "arbitrum-base",
         "op": "optimism-polygon",
         "oa": "optimism-avalanche",
         "ob": "optimism-bsc",
-        "oarb": "optimism-arbitrum"
+        "oarb": "optimism-arbitrum",
+        "obase": "optimism-base",
+        "basep": "base-polygon",
+        "basea": "base-avalanche",
+        "baseb": "base-bsc",
+        "basearb": "base-arbitrum",
+        "baseo": "base-optimism"
     }
 
     logger.info(args)
@@ -239,6 +249,24 @@ async def main(args: str):
                         to_chain_name=optimism.name,
                         from_chain_w3=polygon.w3,
                         destination_chain_id=optimism.layer_zero_chain_id,
+                        source_pool_id=usdc.stargate_pool_id,
+                        dest_pool_id=usdc.stargate_pool_id,
+                        stargate_from_chain_contract=polygon.stargate_contract,
+                        stargate_from_chain_address=polygon.stargate_router_address,
+                        from_chain_explorer=polygon.explorer,
+                        gas=polygon.gas
+                    )
+                )
+            case "polygon-base":
+                tasks.append(
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=polygon.name,
+                        token=usdc.name,
+                        token_from_chain_contract=polygon.usdc_contract,
+                        to_chain_name=base.name,
+                        from_chain_w3=polygon.w3,
+                        destination_chain_id=base.layer_zero_chain_id,
                         source_pool_id=usdc.stargate_pool_id,
                         dest_pool_id=usdc.stargate_pool_id,
                         stargate_from_chain_contract=polygon.stargate_contract,
@@ -391,6 +419,24 @@ async def main(args: str):
                         gas=avalanche.gas
                     )
                 )
+            case "avalanche-base":
+                tasks.append(
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=avalanche.name,
+                        token=usdc.name,
+                        token_from_chain_contract=avalanche.usdc_contract,
+                        to_chain_name=base.name,
+                        from_chain_w3=avalanche.w3,
+                        destination_chain_id=base.layer_zero_chain_id,
+                        source_pool_id=usdc.stargate_pool_id,
+                        dest_pool_id=usdc.stargate_pool_id,
+                        stargate_from_chain_contract=avalanche.stargate_contract,
+                        stargate_from_chain_address=avalanche.stargate_router_address,
+                        from_chain_explorer=avalanche.explorer,
+                        gas=avalanche.gas
+                    )
+                )
             case "bsc-polygon":
                 tasks.append(
                     chain_to_chain(
@@ -482,6 +528,24 @@ async def main(args: str):
                         gas=bsc.gas
                     )
                 )
+            case "bsc-base":
+                tasks.append(
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=bsc.name,
+                        token=usdt.name,
+                        token_from_chain_contract=bsc.usdt_contract,
+                        to_chain_name=base.name,
+                        from_chain_w3=bsc.w3,
+                        destination_chain_id=base.layer_zero_chain_id,
+                        source_pool_id=usdt.stargate_pool_id,
+                        dest_pool_id=usdc.stargate_pool_id,
+                        stargate_from_chain_contract=bsc.stargate_contract,
+                        stargate_from_chain_address=bsc.stargate_router_address,
+                        from_chain_explorer=bsc.explorer,
+                        gas=bsc.gas
+                    )
+                )
             case "arbitrum-polygon":
                 tasks.append(
                     chain_to_chain(
@@ -546,6 +610,24 @@ async def main(args: str):
                         to_chain_name=optimism.name,
                         from_chain_w3=arbitrum.w3,
                         destination_chain_id=optimism.layer_zero_chain_id,
+                        source_pool_id=usdt.stargate_pool_id,
+                        dest_pool_id=usdc.stargate_pool_id,
+                        stargate_from_chain_contract=arbitrum.stargate_contract,
+                        stargate_from_chain_address=arbitrum.stargate_router_address,
+                        from_chain_explorer=arbitrum.explorer,
+                        gas=arbitrum.gas
+                    )
+                )
+            case "arbitrum-base":
+                tasks.append(
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=arbitrum.name,
+                        token=usdt.name,
+                        token_from_chain_contract=arbitrum.usdt_contract,
+                        to_chain_name=base.name,
+                        from_chain_w3=arbitrum.w3,
+                        destination_chain_id=base.layer_zero_chain_id,
                         source_pool_id=usdt.stargate_pool_id,
                         dest_pool_id=usdc.stargate_pool_id,
                         stargate_from_chain_contract=arbitrum.stargate_contract,
@@ -624,6 +706,114 @@ async def main(args: str):
                         stargate_from_chain_address=optimism.stargate_router_address,
                         from_chain_explorer=optimism.explorer,
                         gas=optimism.gas
+                    )
+                )
+            case "optimism-base":
+                tasks.append(
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=optimism.name,
+                        token=usdc.name,
+                        token_from_chain_contract=optimism.usdc_contract,
+                        to_chain_name=base.name,
+                        from_chain_w3=optimism.w3,
+                        destination_chain_id=base.layer_zero_chain_id,
+                        source_pool_id=usdc.stargate_pool_id,
+                        dest_pool_id=usdc.stargate_pool_id,
+                        stargate_from_chain_contract=optimism.stargate_contract,
+                        stargate_from_chain_address=optimism.stargate_router_address,
+                        from_chain_explorer=optimism.explorer,
+                        gas=optimism.gas
+                    )
+                )
+            case "base-polygon":
+                tasks.append(
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=base.name,
+                        token=usdc.name,
+                        token_from_chain_contract=base.usdc_contract,
+                        to_chain_name=polygon.name,
+                        from_chain_w3=base.w3,
+                        destination_chain_id=polygon.layer_zero_chain_id,
+                        source_pool_id=usdc.stargate_pool_id,
+                        dest_pool_id=usdc.stargate_pool_id,
+                        stargate_from_chain_contract=base.stargate_contract,
+                        stargate_from_chain_address=base.stargate_router_address,
+                        from_chain_explorer=base.explorer,
+                        gas=base.gas
+                    )
+                )
+            case "base-avalanche":
+                tasks.append(
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=base.name,
+                        token=usdc.name,
+                        token_from_chain_contract=base.usdc_contract,
+                        to_chain_name=avalanche.name,
+                        from_chain_w3=base.w3,
+                        destination_chain_id=avalanche.layer_zero_chain_id,
+                        source_pool_id=usdc.stargate_pool_id,
+                        dest_pool_id=usdc.stargate_pool_id,
+                        stargate_from_chain_contract=base.stargate_contract,
+                        stargate_from_chain_address=base.stargate_router_address,
+                        from_chain_explorer=base.explorer,
+                        gas=base.gas
+                    )
+                )
+            case "base-bsc":
+                tasks.append(
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=base.name,
+                        token=usdc.name,
+                        token_from_chain_contract=base.usdc_contract,
+                        to_chain_name=bsc.name,
+                        from_chain_w3=base.w3,
+                        destination_chain_id=bsc.layer_zero_chain_id,
+                        source_pool_id=usdc.stargate_pool_id,
+                        dest_pool_id=usdt.stargate_pool_id,
+                        stargate_from_chain_contract=base.stargate_contract,
+                        stargate_from_chain_address=base.stargate_router_address,
+                        from_chain_explorer=base.explorer,
+                        gas=base.gas
+                    )
+                )
+            case "base-arbitrum":
+                tasks.append(
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=base.name,
+                        token=usdc.name,
+                        token_from_chain_contract=base.usdc_contract,
+                        to_chain_name=arbitrum.name,
+                        from_chain_w3=base.w3,
+                        destination_chain_id=arbitrum.layer_zero_chain_id,
+                        source_pool_id=usdc.stargate_pool_id,
+                        dest_pool_id=usdt.stargate_pool_id,
+                        stargate_from_chain_contract=base.stargate_contract,
+                        stargate_from_chain_address=base.stargate_router_address,
+                        from_chain_explorer=base.explorer,
+                        gas=base.gas
+                    )
+                )
+            case "base-optimism":
+                tasks.append(
+                    chain_to_chain(
+                        wallet=wallet,
+                        from_chain_name=base.name,
+                        token=usdc.name,
+                        token_from_chain_contract=base.usdc_contract,
+                        to_chain_name=optimism.name,
+                        from_chain_w3=base.w3,
+                        destination_chain_id=optimism.layer_zero_chain_id,
+                        source_pool_id=usdc.stargate_pool_id,
+                        dest_pool_id=usdc.stargate_pool_id,
+                        stargate_from_chain_contract=base.stargate_contract,
+                        stargate_from_chain_address=base.stargate_router_address,
+                        from_chain_explorer=base.explorer,
+                        gas=base.gas
                     )
                 )
 

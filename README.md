@@ -11,6 +11,9 @@ In addition to this, it is also possible to use script for Bungee Refuel, wallet
 - Fantom (USDC)
 - Avalanche (USDC, USDT)
 - BSC (USDT)
+- Arbitrum (USDT, USDC)
+- Optimism (USDC)
+- Base (USDC)
 
 ## Requirements
 
@@ -83,15 +86,39 @@ Execute only separated one-time bridging runs if you want just to transfer asset
 - `pf` to bridge from Polygon to Fantom
 - `pa` to bridge from Polygon to Avalanche
 - `pb` to bridge from Polygon to BSC
+- `parb` to bridge from Polygon to Arbitrum
+- `po` to bridge from Polygon to Optimism
+- `pbase` to bridge from Polygon to Base
 - `fp` to bridge from Fantom to Polygon
 - `fa` to bridge from Fantom to Avalanche
 - `fb` to bridge from Fantom to BSC
 - `ap` to bridge from Avalanche to Polygon
 - `af` to bridge from Avalanche to Fantom
 - `ab` to bridge from Avalanche to BSC
+- `aarb` to bridge from Avalanche to Arbitrum
+- `ao` to bridge from Avalanche to Optimism
+- `abase` to bridge from Avalanche to Base
 - `bp` to bridge from BSC to Polygon
 - `bf` to bridge from BSC to Fantom
 - `ba` to bridge from BSC to Avalanche
+- `barb` to bridge from BSC to Arbitrum
+- `bo` to bridge from BSC to Optimism
+- `bbase` to bridge from BSC to Base
+- `arbp` to bridge from Arbitrum to Polygon
+- `arba` to bridge from Arbitrum to Avalanche
+- `arbb` to bridge from Arbitrum to BSC
+- `arbo` to bridge from Arbitrum to Optimism
+- `arbbase` to bridge from Arbitrum to Base
+- `op` to bridge from Optimism to Polygon
+- `oa` to bridge from Optimism to Avalanche
+- `ob` to bridge from Optimism to BSC
+- `oarb` to bridge from Optimism to Arbitrum
+- `obase` to bridge from Optimism to Base
+- `basep` to bridge from Base to Polygon
+- `basea` to bridge from Base to Avalanche
+- `baseb` to bridge from Base to BSC
+- `basearb` to bridge from Base to Arbitrum
+- `baseo` to bridge from Base to Optimism
 
 Example:
 
@@ -123,10 +150,34 @@ python main.py --mode balance
 Get native tokens on the destination chain to pay fees using Bungee Refuel. Execute the `main.py` script using `--mode refuel` flag with one of possible options:
 - `pa` to refuel from Polygon to Avalanche
 - `pb` to refuel from Polygon to BSC
+- `parb` to refuel from Polygon to Arbitrum
+- `po` to refuel from Polygon to Optimism
+- `pbase` to refuel from Polygon to Base
 - `ap` to refuel from Avalanche to Polygon
 - `ab` to refuel from Avalanche to BSC
+- `aarb` to refuel from Avalanche to Arbitrum
+- `ao` to refuel from Avalanche to Optimism
+- `abase` to refuel from Avalanche to Base
 - `bp` to refuel from BSC to Polygon
 - `ba` to refuel from BSC to Avalanche
+- `barb` to refuel from BSC to Arbitrum
+- `bo` to refuel from BSC to Optimism
+- `bbase` to refuel from BSC to Base
+- `arbp` to refuel from Arbitrum to Polygon
+- `arba` to refuel from Arbitrum to Avalanche
+- `arbb` to refuel from Arbitrum to BSC
+- `arbo` to refuel from Arbitrum to Optimism
+- `arbbase` to refuel from Arbitrum to Base
+- `op` to refuel from Optimism to Polygon
+- `oa` to refuel from Optimism to Avalanche
+- `ob` to refuel from Optimism to BSC
+- `oarb` to refuel from Optimism to Arbitrum
+- `obase` to refuel from Optimism to Base
+- `basep` to refuel from Base to Polygon
+- `basea` to refuel from Base to Avalanche
+- `baseb` to refuel from Base to BSC
+- `basearb` to refuel from Base to Arbitrum
+- `baseo` to refuel from Base to Optimism
 
 Example:
 

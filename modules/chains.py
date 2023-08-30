@@ -94,7 +94,7 @@ bsc = Chain(
     layer_zero_chain_id=102,
     bungee_chain_id=56,
     explorer='bscscan.com',
-    gas=400_000
+    gas=700_000
 )
 
 arbitrum = Chain(
@@ -122,5 +122,19 @@ optimism = Chain(
     layer_zero_chain_id=111,
     bungee_chain_id=10,
     explorer='optimistic.etherscan.io',
+    gas=700_000
+)
+
+base = Chain(
+    name='BASE',
+    native_asset_symbol='ETH',
+    rpc_url='https://base.blockpi.network/v1/rpc/public',
+    stargate_router_address='0x45f1A95A4D3f3836523F5c83673c797f4d4d263B',
+    usdc_address=usdc.base_address,
+    bungee_refuel_address='0x3a23F943181408EAC424116Af7b7790c94Cb97a5',
+    usdt_address=None,
+    layer_zero_chain_id=184,
+    bungee_chain_id=8453,
+    explorer='basescan.org',
     gas=700_000
 )
