@@ -49,6 +49,7 @@ In addition to this, it is also possible to use script for Bungee Refuel, wallet
     ```python
     AMOUNT_MIN = 100  # Min amount to bridge
     AMOUNT_MAX = 150  # Max amount to bridge
+    # If stated amounts exceed wallet balance, the whole available balance would be bridged
     TIMES = 10  # Number of transfer cycles
     BUNGEE_AMOUNT = 10  # $ value of native asset to be bridged via Bungee Refuel
     ```
