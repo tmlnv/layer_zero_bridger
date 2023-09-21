@@ -31,7 +31,7 @@ async def chain_to_chain(
         from_chain_explorer: str,
         gas: int
 ) -> None:
-    """Transfer function. It sends USDC from Polygon to Fantom.
+    """Transfer function. It bridges token from source blockchain to destination blockchain.
     Stargate docs:  https://stargateprotocol.gitbook.io/stargate/developers
 
     Args:

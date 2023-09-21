@@ -13,9 +13,9 @@ from modules.custom_logger import logger
 
 
 async def work(wallet: str) -> None:
-    """Transfer cycle function. It sends USDC from Polygon Avalanche and then to BSC as USDT.
+    """Transfer cycle function. It sends USDC from Polygon to Avalanche and then to BSC as USDT.
     From BSC USDT tokens are bridged to Polygon into USDC.
-    It runs such cycles N times, where N - number of cycles specified if config.py
+    It runs such cycle N times, where N - number of cycles specified if config.py
 
     Args:
         wallet: wallet address
