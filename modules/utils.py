@@ -1,7 +1,11 @@
 """Helper functions"""
 import aiohttp
 from eth_account import Account
+from hexbytes import HexBytes
+from loguru import logger
 from web3.contract import AsyncContract
+
+from modules.chains import Chain
 
 
 async def get_token_decimals(token_contract: AsyncContract) -> int:
@@ -59,3 +63,25 @@ async def get_token_price(token_symbol: str) -> float:
         async with session.get(url) as response:
             response.raise_for_status()
             return (await response.json())['USDT']
+
+
+async def _send_transaction(address: str, from_chain: Chain, transaction: dict, private_key: str) -> HexBytes:
+    """Signing and sending transaction function"""
+    signed_transaction = from_chain.w3.eth.account.sign_transaction(transaction, private_key)
+    logger.info(f'SIGNING | {address} | Transaction signed')
+    try:
+        transaction_hash = await from_chain.w3.eth.send_raw_transaction(signed_transaction.rawTransaction)
+    except Exception as e:
+        logger.error(
+            f"SENDING | {address} | Problem sending transaction. Probably wallet balance is too low. {e}"
+        )
+    hex_tr = transaction_hash.hex()
+    logger.info(f'SENDING | {address} | Transaction: https://{from_chain.explorer}/tx/{hex_tr}')
+    receipt = await from_chain.w3.eth.wait_for_transaction_receipt(transaction_hash)
+
+    if receipt.status == 1:
+        logger.success(f"SENDING | {address} | Transaction succeeded")
+    else:
+        logger.error(f"SENDING | {address} | Transaction failed")
+
+    return hex_tr
