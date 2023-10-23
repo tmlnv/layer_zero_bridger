@@ -12,7 +12,7 @@ from web3 import Web3
 from modules.chains import Chain, polygon, avalanche, bsc, arbitrum, optimism, base
 from config import PRIVATE_KEYS, BUNGEE_AMOUNT
 from modules.custom_logger import logger
-from modules.utils import wallet_public_address, get_token_price
+from modules.utils import wallet_public_address, get_token_price, _send_transaction
 
 
 async def get_bungee_refuel_amount(token_symbol: str):
@@ -54,7 +54,7 @@ async def _create_transaction(address: str, from_chain: Chain, to_chain: Chain, 
     min_bungee_limit = min_bungee_limit / 10 ** from_chain.native_token_decimals
     max_bungee_limit = max_bungee_limit / 10 ** from_chain.native_token_decimals
     logger.info(
-        f"BUNGEE LIMITS | " +
+        "BUNGEE LIMITS | " +
         (
             limits_msg := f"Min is {min_bungee_limit} {from_chain.native_asset_symbol}, "
                           f"Max is {max_bungee_limit} {from_chain.native_asset_symbol}"
@@ -81,24 +81,6 @@ async def _create_transaction(address: str, from_chain: Chain, to_chain: Chain, 
     )
     logger.info(f"BUNGEE REFUEL | {address} | Transaction created")
     return transaction
-
-
-async def _send_transaction(address: str, from_chain: Chain, transaction: dict, private_key: str) -> None:
-    signed_transaction = from_chain.w3.eth.account.sign_transaction(transaction, private_key)
-    logger.info(f'BUNGEE REFUEL | {address} | Transaction signed')
-    try:
-        transaction_hash = await from_chain.w3.eth.send_raw_transaction(signed_transaction.rawTransaction)
-    except Exception as e:
-        logger.error(
-            f"BUNGEE REFUEL | {address} | Problem sending transaction. Probably wallet balance is too low. {e}"
-        )
-    logger.info(f'BUNGEE REFUEL | {address} | Transaction: https://{from_chain.explorer}/tx/{transaction_hash.hex()}')
-    receipt = await from_chain.w3.eth.wait_for_transaction_receipt(transaction_hash)
-
-    if receipt.status == 1:
-        logger.success(f"BUNGEE REFUEL | {address} | Transaction succeeded")
-    else:
-        logger.error(f"BUNGEE REFUEL | {address} | Transaction failed")
 
 
 async def bungee_refuel(from_chain: Chain, to_chain: Chain, private_key: str, amount: int | float) -> None:
