@@ -17,8 +17,9 @@ In addition to this, it is also possible to use script for Bungee Refuel, wallet
 
 ## Requirements
 
-- Python 3.10 or higher
+- Python 3.11
 - An understanding of blockchain, cryptocurrency, and how to handle wallets and private keys securely.
+- Docker (optional)
 
 ## Getting Started
 
@@ -34,6 +35,12 @@ In addition to this, it is also possible to use script for Bungee Refuel, wallet
     ```bash
     pip install -r requirements.txt
     ```
+   
+   Or, using Docker:
+   
+   ```bash
+   docker build -t layer_zero_bridger .
+   ```
 
 3. Configure your wallets and number of cycles:
 
@@ -63,6 +70,18 @@ Execute the `main.py` script:
 python main.py
 ```
 
+Or, using Docker:
+
+```bash
+docker run layer_zero_bridger -v ./private_keys.env:/app/private_keys.env
+```
+
+To pass CLI arguments, append them after the image name and private_keys.env mounting:
+
+```bash
+docker run layer_zero_bridger -v ./private_keys.env:/app/private_keys.env --mode balance
+````
+
 ## Operation
 
 The main script performs the following actions for each wallet:
@@ -79,7 +98,7 @@ The script logs all its actions and reports when each wallet's transfers are don
 
 ## Modules usage
 
-To use separate modules, execute the `main.py` script using `--mode` flag with one of possible options:
+To use separate modules, execute the `main.py` script using `--mode` flag with one of possible options or pass the `--mode` flag followed by the specific option to the Docker run command:
 
 ### One way bridge
 
