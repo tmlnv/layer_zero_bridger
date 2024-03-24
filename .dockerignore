@@ -1,0 +1,3 @@
+# Do not copy private keys into Docker image
+private_keys.env
+private_keys.example.env
