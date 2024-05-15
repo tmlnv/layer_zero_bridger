@@ -11,12 +11,12 @@ from modules.custom_logger import logger
 
 
 tokens = {
-    'POLYGON': polygon.usdc_contract,
-    'AVALANCHE': avalanche.usdc_contract,
-    'BSC': bsc.usdt_contract,
-    'ARBITRUM': arbitrum.usdt_contract,
-    'OPTIMISM': optimism.usdc_contract,
-    'BASE': base.usdc_contract
+    "POLYGON": polygon.usdc_contract,
+    "AVALANCHE": avalanche.usdc_contract,
+    "BSC": bsc.usdt_contract,
+    "ARBITRUM": arbitrum.usdt_contract,
+    "OPTIMISM": optimism.usdc_contract,
+    "BASE": base.usdc_contract,
 }
 
 supported_chains = [polygon, avalanche, bsc, arbitrum, optimism, base]
@@ -38,7 +38,9 @@ async def _get_token_data(token_contract: AsyncContract):
     return decimals, symbol
 
 
-async def _check_balance(wallet: str, token_contract: AsyncContract, skip_small: bool = True) -> (float, str):
+async def _check_balance(
+    wallet: str, token_contract: AsyncContract, skip_small: bool = True
+) -> tuple[float, str]:
     """Check token balance for the specified wallet
 
     Args:
@@ -49,7 +51,7 @@ async def _check_balance(wallet: str, token_contract: AsyncContract, skip_small:
     token_decimal, symbol = await _get_token_data(token_contract=token_contract)
     balance = await token_contract.functions.balanceOf(wallet).call()
 
-    human_readable = balance / 10 ** token_decimal
+    human_readable = balance / 10**token_decimal
 
     if human_readable != 0 and human_readable < 0.01 and skip_small:
         human_readable = "DUST"
@@ -57,7 +59,7 @@ async def _check_balance(wallet: str, token_contract: AsyncContract, skip_small:
     return human_readable, symbol
 
 
-async def _worker(wallet: str, chain: Chain) -> (str, str, dict):
+async def _worker(wallet: str, chain: Chain) -> tuple[str, str, dict[str, float]]:
     """Function for getting balance of a token for a given chain
 
     Args:
@@ -71,7 +73,7 @@ async def _worker(wallet: str, chain: Chain) -> (str, str, dict):
 
 
 async def _main(wallets: list[str], chains: list[Chain]) -> None:
-    """ Async function for getting all balance of a specified token for specified wallet on a given chain
+    """Async function for getting all balance of a specified token for specified wallet on a given chain
 
     Args:
         wallets:    list of public addresses
@@ -89,7 +91,7 @@ async def _main(wallets: list[str], chains: list[Chain]) -> None:
 
 
 def print_results():
-    """ Print results in a table"""
+    """Print results in a table"""
     column_names = ["Wallet"]
     for chain in supported_chains:
         for token in TOKEN_SYMBOLS:
@@ -107,7 +109,11 @@ def print_results():
                     columns_to_drop.remove(column_name)
 
     table = PrettyTable()
-    table.field_names = [column_name for column_name in column_names if column_name not in columns_to_drop]
+    table.field_names = [
+        column_name
+        for column_name in column_names
+        if column_name not in columns_to_drop
+    ]
 
     for wallet, chains in BALANCES.items():
         row_data = [wallet]
@@ -126,7 +132,7 @@ def print_results():
 
 
 async def get_balances():
-    """ Get all balances for private keys of wallets provided"""
+    """Get all balances for private keys of wallets provided"""
     public_wallets = []
     for private_key in PRIVATE_KEYS:
         wallet = wallet_public_address(private_key)
