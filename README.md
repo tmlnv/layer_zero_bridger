@@ -73,13 +73,13 @@ python main.py
 Or, using Docker:
 
 ```bash
-docker run layer_zero_bridger -v ./private_keys.env:/app/private_keys.env
+docker run -v ./private_keys.env:/app/private_keys.env layer_zero_bridger
 ```
 
 To pass CLI arguments, append them after the image name and private_keys.env mounting:
 
 ```bash
-docker run layer_zero_bridger -v ./private_keys.env:/app/private_keys.env --mode balance
+docker run -v ./private_keys.env:/app/private_keys.env layer_zero_bridger --mode balance
 ````
 
 ## Operation
