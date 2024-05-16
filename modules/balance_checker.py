@@ -38,9 +38,7 @@ async def _get_token_data(token_contract: AsyncContract):
     return decimals, symbol
 
 
-async def _check_balance(
-    wallet: str, token_contract: AsyncContract, skip_small: bool = True
-) -> tuple[float, str]:
+async def _check_balance(wallet: str, token_contract: AsyncContract, skip_small: bool = True) -> tuple[float, str]:
     """Check token balance for the specified wallet
 
     Args:
@@ -109,11 +107,7 @@ def print_results():
                     columns_to_drop.remove(column_name)
 
     table = PrettyTable()
-    table.field_names = [
-        column_name
-        for column_name in column_names
-        if column_name not in columns_to_drop
-    ]
+    table.field_names = [column_name for column_name in column_names if column_name not in columns_to_drop]
 
     for wallet, chains in BALANCES.items():
         row_data = [wallet]
