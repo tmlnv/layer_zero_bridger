@@ -100,11 +100,11 @@ async def work(wallet: str) -> None:
 
 
 async def main():
+    await get_balances()
     await asyncio.gather(*[work(wallet) for wallet in PRIVATE_KEYS], return_exceptions=True)
 
     logger.success('*** FINISHED ***')
 
 
 if __name__ == '__main__':
-    get_balances()
     asyncio.run(main())
