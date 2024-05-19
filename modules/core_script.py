@@ -8,7 +8,6 @@ from modules.chain_to_chain import chain_to_chain
 from modules.tokens import usdc, usdt
 from modules.chains import polygon, avalanche, bsc
 from modules.utils import wallet_public_address
-from modules.balance_checker import get_balances
 from modules.custom_logger import logger
 
 
@@ -51,7 +50,7 @@ async def work(wallet: str) -> None:
         )
 
         polygon_delay = random.randint(1200, 1500)
-        logger.info(f'POLYGON DELAY | {address} | Waiting for {polygon_delay} seconds.')
+        logger.info(f"POLYGON DELAY | {address} | Waiting for {polygon_delay} seconds.")
         await draw_tqdm(delay=polygon_delay, desc=f"Waiting POLYGON DELAY | {address}")
 
         await chain_to_chain(
@@ -71,7 +70,7 @@ async def work(wallet: str) -> None:
         )
 
         avalanche_delay = random.randint(1200, 1500)
-        logger.info(f'AVALANCHE DELAY | {address} | Waiting for {avalanche_delay} seconds.')
+        logger.info(f"AVALANCHE DELAY | {address} | Waiting for {avalanche_delay} seconds.")
         await draw_tqdm(delay=polygon_delay, desc=f"Waiting AVALANCHE DELAY | {address}")
 
         await chain_to_chain(
@@ -91,20 +90,19 @@ async def work(wallet: str) -> None:
         )
 
         bsc_delay = random.randint(100, 300)
-        logger.info(f'BSC DELAY | {address} | Waiting for {bsc_delay} seconds.')
+        logger.info(f"BSC DELAY | {address} | Waiting for {bsc_delay} seconds.")
         await draw_tqdm(delay=polygon_delay, desc=f"Waiting BSC DELAY | {address}",)
 
         counter += 1
 
-    logger.success(f'DONE | {address}')
+    logger.success(f"DONE | {address}")
 
 
 async def main():
-    await get_balances()
     await asyncio.gather(*[work(wallet) for wallet in PRIVATE_KEYS], return_exceptions=True)
 
-    logger.success('*** FINISHED ***')
+    logger.success("*** FINISHED ***")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     asyncio.run(main())
