@@ -2,17 +2,19 @@
 import argparse
 import asyncio
 
+from modules.balance_checker import get_balances as balance_checker
 from modules.bungee_refuel import main as bungee_refuel
 from modules.chain_to_chain import main as chain_to_chain
-from modules.balance_checker import get_balances as balance_checker
-from modules.wallet_generator import create_wallet as wallet_generator
 from modules.core_script import main as core_script
+from modules.custom_logger import logger
+from modules.wallet_generator import create_wallet as wallet_generator
 
 
 async def main():
-    """ Main script. Without CLI arguments runs core_script.py according to config.
-        With CLI arguments can be used for wallet generation, one-way asset bridging via Layer Zero,
-        balance checking and bridging into native tokens to pay for gas fees via Bungee Refuel.
+    """
+    Main script. Without CLI arguments runs core_script.py according to config.
+    With CLI arguments can be used for wallet generation, one-way asset bridging via Layer Zero,
+    balance checking and bridging into native tokens to pay for gas fees via Bungee Refuel.
     """
     parser = argparse.ArgumentParser(description="Layer Zero Bridger modules")
 
@@ -57,5 +59,9 @@ async def main():
             await balance_checker()
             await core_script()
 
+
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logger.info("EXECUTION STOPPED")

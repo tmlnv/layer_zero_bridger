@@ -168,7 +168,7 @@ async def check_balance(address: str, token: str, token_contract: AsyncContract)
     return token_balance
 
 
-async def is_balance_updated(address: str, token: str, token_contract: AsyncContract) -> bool:
+async def is_balance_updated(address: str, token: str, token_contract: AsyncContract, stop_if_zero: bool) -> bool:
     """ Checks whether token balance on a specified chain is updated.
     (Is transfer completed or not)
 
@@ -179,7 +179,10 @@ async def is_balance_updated(address: str, token: str, token_contract: AsyncCont
     """
     balance = await check_balance(address=address, token=token, token_contract=token_contract)
 
-    while balance < 3 * (10 ** await get_token_decimals(token_contract)):
+    if balance < (dust := 3 * (10 ** await get_token_decimals(token_contract))) and stop_if_zero:
+        return False
+
+    while balance < dust:
         await asyncio.sleep(10)
         balance = await check_balance(address=address, token=token, token_contract=token_contract)
 

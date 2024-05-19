@@ -16,19 +16,20 @@ from modules.custom_logger import logger
 
 
 async def chain_to_chain(
-        wallet: str,
-        from_chain_name: str,
-        token: str,
-        token_from_chain_contract: AsyncContract,
-        to_chain_name: str,
-        from_chain: Chain,
-        destination_chain_id: int,
-        source_pool_id: int,
-        dest_pool_id: int,
-        stargate_from_chain_contract: AsyncContract,
-        stargate_from_chain_address: ChecksumAddress,
-        from_chain_explorer: str,
-        gas: int
+    wallet: str,
+    from_chain_name: str,
+    token: str,
+    token_from_chain_contract: AsyncContract,
+    to_chain_name: str,
+    from_chain: Chain,
+    destination_chain_id: int,
+    source_pool_id: int,
+    dest_pool_id: int,
+    stargate_from_chain_contract: AsyncContract,
+    stargate_from_chain_address: ChecksumAddress,
+    from_chain_explorer: str,
+    gas: int,
+    stop_if_zero: bool = True,
 ) -> None:
     """Transfer function. It bridges token from source blockchain to destination blockchain.
     Stargate docs:  https://stargateprotocol.gitbook.io/stargate/developers
@@ -47,18 +48,20 @@ async def chain_to_chain(
         stargate_from_chain_address:    Address of Stargate Finance: Router at sending chain
         from_chain_explorer:            Sending chain explorer
         gas:                            Amount of gas
+        stop_if_zero:                   Stop trying if balance is zero
     """
     address = wallet_public_address(wallet)
 
-    amount_to_swap, min_amount = await get_correct_amount_and_min_amount(token_contract=token_from_chain_contract,
-                                                                         amount_to_swap=AMOUNT_TO_SWAP)
+    amount_to_swap, min_amount = await get_correct_amount_and_min_amount(
+        token_contract=token_from_chain_contract, amount_to_swap=AMOUNT_TO_SWAP
+    )
 
     start_delay = random.randint(1, 200)
     logger.info(f"START DELAY | {address} | Waiting for {start_delay} seconds.")
     with tqdm(
-            total=start_delay, desc=f"Waiting START DELAY | {address}", bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}"
+        total=start_delay, desc=f"Waiting START DELAY | {address}", bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}"
     ) as pbar:
-        for i in range(start_delay):
+        for _ in range(start_delay):
             await asyncio.sleep(1)
             pbar.update(1)
 
@@ -66,10 +69,21 @@ async def chain_to_chain(
     logger_cntr = 0
     while not balance:
         await asyncio.sleep(30)
+
         if logger_cntr % 3 == 0:
             logger.info(f"BALANCE | {address} | Checking {from_chain_name} {token} balance")
-        balance = await is_balance_updated(address=address, token=token, token_contract=token_from_chain_contract)
+
+        balance = await is_balance_updated(
+            address=address, token=token, token_contract=token_from_chain_contract, stop_if_zero=stop_if_zero
+        )
         logger_cntr += 1
+
+        if logger_cntr == 3:
+            logger.info(
+                f"STOP | {address} | "
+                f"Stopping {from_chain_name} {token} due to zero balance and {stop_if_zero=} flag"
+            )
+            return
 
     logger.info(
         f"BRIDGING | {address} | "

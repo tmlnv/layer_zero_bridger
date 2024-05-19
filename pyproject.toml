@@ -20,6 +20,9 @@ hexbytes = ">=0.3.0,<0.4.0"
 aiohttp = ">=3.8.4,<3.10.0"
 
 
+[tool.poetry.group.dev.dependencies]
+neovim = "^0.3.1"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
