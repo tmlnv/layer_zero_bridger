@@ -1,14 +1,14 @@
-import random
 import asyncio
+import random
 
 from tqdm import tqdm
 
 from config import PRIVATE_KEYS, TIMES
 from modules.chain_to_chain import chain_to_chain
-from modules.tokens import usdc, usdt
-from modules.chains import polygon, avalanche, bsc
-from modules.utils import wallet_public_address
+from modules.chains import avalanche, bsc, polygon
 from modules.custom_logger import logger
+from modules.tokens import usdc, usdt
+from modules.utils import wallet_public_address
 
 
 async def draw_tqdm(delay: int, desc: str) -> None:
@@ -33,7 +33,7 @@ async def work(wallet: str) -> None:
 
     while counter < TIMES:
 
-        await chain_to_chain(
+        is_sent = await chain_to_chain(
             wallet=wallet,
             from_chain_name=polygon.name,
             token=usdc.name,
@@ -46,8 +46,15 @@ async def work(wallet: str) -> None:
             stargate_from_chain_contract=polygon.stargate_contract,
             stargate_from_chain_address=polygon.stargate_router_address,
             from_chain_explorer=polygon.explorer,
-            gas=polygon.gas
+            gas=polygon.gas,
         )
+
+        if not is_sent:
+            logger.error(
+                f"FAILED TO SEND FROM THE FIRST CHAIN | {address} | "
+                f"Source: {polygon.name}, destination chain: {avalanche.name}"
+            )
+            break
 
         polygon_delay = random.randint(1200, 1500)
         logger.info(f"POLYGON DELAY | {address} | Waiting for {polygon_delay} seconds.")
@@ -66,7 +73,8 @@ async def work(wallet: str) -> None:
             stargate_from_chain_contract=avalanche.stargate_contract,
             stargate_from_chain_address=avalanche.stargate_router_address,
             from_chain_explorer=avalanche.explorer,
-            gas=avalanche.gas
+            gas=avalanche.gas,
+            stop_if_zero=False
         )
 
         avalanche_delay = random.randint(1200, 1500)
@@ -86,12 +94,13 @@ async def work(wallet: str) -> None:
             stargate_from_chain_contract=bsc.stargate_contract,
             stargate_from_chain_address=bsc.stargate_router_address,
             from_chain_explorer=bsc.explorer,
-            gas=bsc.gas
+            gas=bsc.gas,
+            stop_if_zero=False
         )
 
         bsc_delay = random.randint(100, 300)
         logger.info(f"BSC DELAY | {address} | Waiting for {bsc_delay} seconds.")
-        await draw_tqdm(delay=polygon_delay, desc=f"Waiting BSC DELAY | {address}",)
+        await draw_tqdm(delay=polygon_delay, desc=f"Waiting BSC DELAY | {address}")
 
         counter += 1
 

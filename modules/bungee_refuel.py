@@ -2,17 +2,17 @@
     Docs: https://docs.socket.tech/socket-api/contract-addresses
 """
 import asyncio
+import random
 import sys
 from typing import Coroutine
-import random
 
 import aiohttp
 from web3 import Web3
 
-from modules.chains import Chain, polygon, avalanche, bsc, arbitrum, optimism, base
-from config import PRIVATE_KEYS, BUNGEE_AMOUNT
+from config import BUNGEE_AMOUNT, PRIVATE_KEYS
+from modules.chains import Chain, arbitrum, avalanche, base, bsc, optimism, polygon
 from modules.custom_logger import logger
-from modules.utils import wallet_public_address, get_token_price, _send_transaction
+from modules.utils import _send_transaction, get_token_price, wallet_public_address
 
 
 async def get_bungee_refuel_amount(token_symbol: str):
@@ -29,54 +29,56 @@ async def _get_bungee_data() -> dict:
                 raise ValueError("Could not fetch Bungee params")
 
 
-async def _get_bungee_limits(from_chain: Chain, to_chain: Chain) -> (int, int):
+async def _get_bungee_limits(from_chain: Chain, to_chain: Chain) -> tuple[int, int]:
     bungee_params = await _get_bungee_data()
 
-    for chain in bungee_params['result']:
-        if chain['chainId'] == from_chain.bungee_chain_id:
-            limits: list = chain['limits']
+    for chain in bungee_params["result"]:
+        if chain["chainId"] == from_chain.bungee_chain_id:
+            limits: list = chain["limits"]
 
             for limit in limits:
-                if limit['chainId'] == to_chain.bungee_chain_id:
-                    if not limit['isEnabled']:
+                if limit["chainId"] == to_chain.bungee_chain_id:
+                    if not limit["isEnabled"]:
                         logger.error(msg := f"Destination chain {to_chain.name} is not enabled")
                         raise ValueError(msg)
                     destination_chain_limits: dict = limit
 
-    return int(destination_chain_limits['minAmount']), int(destination_chain_limits['maxAmount'])
+    return int(destination_chain_limits["minAmount"]), int(destination_chain_limits["maxAmount"])
 
 
 async def _create_transaction(address: str, from_chain: Chain, to_chain: Chain, amount: int | float) -> dict:
-    amount *= (1 + random.uniform(0, 0.1))
+    amount *= 1 + random.uniform(0, 0.1)
 
     min_bungee_limit, max_bungee_limit = await _get_bungee_limits(from_chain=from_chain, to_chain=to_chain)
 
-    min_bungee_limit = min_bungee_limit / 10 ** from_chain.native_token_decimals
-    max_bungee_limit = max_bungee_limit / 10 ** from_chain.native_token_decimals
+    min_bungee_limit = min_bungee_limit / 10**from_chain.native_token_decimals
+    max_bungee_limit = max_bungee_limit / 10**from_chain.native_token_decimals
     logger.info(
-        "BUNGEE LIMITS | " +
-        (
+        "BUNGEE LIMITS | "
+        + (
             limits_msg := f"Min is {min_bungee_limit} {from_chain.native_asset_symbol}, "
-                          f"Max is {max_bungee_limit} {from_chain.native_asset_symbol}"
+            f"Max is {max_bungee_limit} {from_chain.native_asset_symbol}"
         )
     )
 
     if amount < min_bungee_limit or amount > max_bungee_limit:
-        logger.error(msg := (
-            f"BUNGEE AMOUNTS | {address} | Transferring {amount} {from_chain.native_asset_symbol} is not possible. " +
-            limits_msg
-        ))
+        logger.error(
+            msg := (
+                f"BUNGEE AMOUNTS | {address} | Transferring {amount} {from_chain.native_asset_symbol} is not possible. "
+                + limits_msg
+            )
+        )
         raise ValueError(msg)
 
     transaction = await from_chain.bungee_contract.functions.depositNativeToken(
         to_chain.bungee_chain_id, address
     ).build_transaction(
         {
-            'from': address,
-            'gas': from_chain.gas * 2,
-            'gasPrice': await from_chain.w3.eth.gas_price,
-            'value': Web3.to_wei(amount, 'ether'),
-            'nonce': await from_chain.w3.eth.get_transaction_count(address),
+            "from": address,
+            "gas": from_chain.gas * 2,
+            "gasPrice": await from_chain.w3.eth.gas_price,
+            "value": Web3.to_wei(amount, "ether"),
+            "nonce": await from_chain.w3.eth.get_transaction_count(address)
         }
     )
     logger.info(f"BUNGEE REFUEL | {address} | Transaction created")
@@ -86,7 +88,7 @@ async def _create_transaction(address: str, from_chain: Chain, to_chain: Chain, 
 async def bungee_refuel(from_chain: Chain, to_chain: Chain, private_key: str, amount: int | float) -> None:
     address = wallet_public_address(private_key)
 
-    logger.info(f'BUNGEE REFUEL | {address} | Starting refuel from {from_chain.name} to {to_chain.name}')
+    logger.info(f"BUNGEE REFUEL | {address} | Starting refuel from {from_chain.name} to {to_chain.name}")
     transaction = await _create_transaction(address=address, from_chain=from_chain, to_chain=to_chain, amount=amount)
 
     await _send_transaction(address=address, from_chain=from_chain, transaction=transaction, private_key=private_key)

@@ -1,18 +1,18 @@
-import random
 import asyncio
+import random
 import sys
 from typing import Coroutine
 
 from eth_typing import ChecksumAddress
-from web3.contract import AsyncContract
 from tqdm import tqdm
+from web3.contract import AsyncContract
 
-from config import PRIVATE_KEYS, AMOUNT_TO_SWAP
-from modules.bridger import send_token_chain_to_chain, is_balance_updated
-from modules.tokens import usdc, usdt
-from modules.chains import polygon, avalanche, bsc, fantom, arbitrum, optimism, base, Chain
-from modules.utils import get_correct_amount_and_min_amount, get_token_decimals, wallet_public_address
+from config import AMOUNT_TO_SWAP, PRIVATE_KEYS
+from modules.bridger import is_balance_updated, send_token_chain_to_chain
+from modules.chains import Chain, arbitrum, avalanche, base, bsc, fantom, optimism, polygon
 from modules.custom_logger import logger
+from modules.tokens import usdc, usdt
+from modules.utils import get_correct_amount_and_min_amount, get_token_decimals, wallet_public_address
 
 
 async def chain_to_chain(
@@ -30,7 +30,7 @@ async def chain_to_chain(
     from_chain_explorer: str,
     gas: int,
     stop_if_zero: bool = True,
-) -> None:
+) -> bool:
     """Transfer function. It bridges token from source blockchain to destination blockchain.
     Stargate docs:  https://stargateprotocol.gitbook.io/stargate/developers
 
@@ -83,7 +83,7 @@ async def chain_to_chain(
                 f"STOP | {address} | "
                 f"Stopping {from_chain_name} {token} due to zero balance and {stop_if_zero=} flag"
             )
-            return
+            return False
 
     logger.info(
         f"BRIDGING | {address} | "
@@ -117,10 +117,10 @@ async def chain_to_chain(
         from_chain_explorer=from_chain_explorer,
         gas=gas
     )
-    logger.success(
-        f"{from_chain_name} | {address} | Transaction: https://{from_chain_explorer}/tx/{bridging_txn_hex}"
-    )
+    logger.success(f"{from_chain_name} | {address} | Transaction: https://{from_chain_explorer}/tx/{bridging_txn_hex}")
     logger.success(f"LAYERZEROSCAN | {address} | Transaction: https://layerzeroscan.com/tx/{bridging_txn_hex}")
+
+    return True
 
 
 async def main(args: str):

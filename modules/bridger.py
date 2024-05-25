@@ -3,13 +3,12 @@ import asyncio
 from eth_typing import ChecksumAddress
 from hexbytes import HexBytes
 from loguru import logger
-
 from web3.contract import AsyncContract
 from web3.exceptions import ValidationError
 
 from modules.chains import Chain
 from modules.tokens import token_addresses
-from modules.utils import get_min_amount_to_swap, get_token_decimals, _send_transaction
+from modules.utils import _send_transaction, get_min_amount_to_swap, get_token_decimals
 
 
 async def send_token_chain_to_chain(
@@ -55,8 +54,10 @@ async def send_token_chain_to_chain(
     fee = fees[0]
 
     allowance = await token_from_chain_contract.functions.allowance(address, stargate_from_chain_address).call()
-    logger.debug(f"ALLOWANCE | {address} | {from_chain_name} allowance for {token} is "
-                 f"{allowance / 10 ** await get_token_decimals(token_from_chain_contract)}")
+    logger.debug(
+        f"ALLOWANCE | {address} | {from_chain_name} allowance for {token} is "
+        f"{allowance / 10 ** await get_token_decimals(token_from_chain_contract)}"
+    )
 
     if allowance < amount_to_swap:
         approve_txn = await token_from_chain_contract.functions.approve(
@@ -64,10 +65,10 @@ async def send_token_chain_to_chain(
             amount_to_swap
         ).build_transaction(
             {
-                'from': address,
-                'gas': 150000,
-                'gasPrice': gas_price,
-                'nonce': nonce,
+                "from": address,
+                "gas": 150000,
+                "gasPrice": gas_price,
+                "nonce": nonce
             }
         )
 
@@ -77,8 +78,9 @@ async def send_token_chain_to_chain(
             transaction=approve_txn,
             private_key=private_key
         )
-        logger.info(f"{from_chain_name} | {address} | {token} APPROVED "
-                    f"https://{from_chain_explorer}/tx/{approve_txn}")
+        logger.info(
+            f"{from_chain_name} | {address} | {token} APPROVED " f"https://{from_chain_explorer}/tx/{approve_txn}"
+        )
 
         nonce += 1
 
@@ -169,7 +171,7 @@ async def check_balance(address: str, token: str, token_contract: AsyncContract)
 
 
 async def is_balance_updated(address: str, token: str, token_contract: AsyncContract, stop_if_zero: bool) -> bool:
-    """ Checks whether token balance on a specified chain is updated.
+    """Checks whether token balance on a specified chain is updated.
     (Is transfer completed or not)
 
     Args:
