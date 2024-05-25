@@ -1,14 +1,13 @@
 import asyncio
 
-from web3.contract import AsyncContract
-from prettytable import PrettyTable
 from colorama import Fore, Style
+from prettytable import PrettyTable
+from web3.contract import AsyncContract
 
 from config import PRIVATE_KEYS
-from modules.utils import get_token_decimals, get_token_symbol, wallet_public_address
-from modules.chains import Chain, polygon, avalanche, bsc, arbitrum, optimism, base
+from modules.chains import Chain, arbitrum, avalanche, base, bsc, optimism, polygon
 from modules.custom_logger import logger
-
+from modules.utils import get_token_decimals, get_token_symbol, wallet_public_address
 
 tokens = {
     "POLYGON": polygon.usdc_contract,

@@ -33,7 +33,7 @@ async def work(wallet: str) -> None:
 
     while counter < TIMES:
 
-        await chain_to_chain(
+        is_sent = await chain_to_chain(
             wallet=wallet,
             from_chain_name=polygon.name,
             token=usdc.name,
@@ -46,8 +46,15 @@ async def work(wallet: str) -> None:
             stargate_from_chain_contract=polygon.stargate_contract,
             stargate_from_chain_address=polygon.stargate_router_address,
             from_chain_explorer=polygon.explorer,
-            gas=polygon.gas
+            gas=polygon.gas,
         )
+
+        if not is_sent:
+            logger.error(
+                f"FAILED TO SEND FROM THE FIRST CHAIN | {address} | "
+                f"Source: {polygon.name}, destination chain: {avalanche.name}"
+            )
+            break
 
         polygon_delay = random.randint(1200, 1500)
         logger.info(f"POLYGON DELAY | {address} | Waiting for {polygon_delay} seconds.")
@@ -93,10 +100,7 @@ async def work(wallet: str) -> None:
 
         bsc_delay = random.randint(100, 300)
         logger.info(f"BSC DELAY | {address} | Waiting for {bsc_delay} seconds.")
-        await draw_tqdm(
-            delay=polygon_delay,
-            desc=f"Waiting BSC DELAY | {address}"
-        )
+        await draw_tqdm(delay=polygon_delay, desc=f"Waiting BSC DELAY | {address}")
 
         counter += 1
 
